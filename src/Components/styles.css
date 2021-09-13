@@ -71,6 +71,7 @@ body {
   letter-spacing: 17.4px;
   animation-name: moveInRight;
   animation-duration: 1s;
+  padding-top: 10%;
 }
 
 @keyframes moveInLeft {
