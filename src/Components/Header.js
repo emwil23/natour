@@ -15,7 +15,7 @@ const Header = () => {
           <span class='heading-primary--sub'>is where life happens</span>
         </h1>
 
-        <a href='' class='btn btn--white btn--animated'>
+        <a href='#' class='btn btn--white btn--animated'>
           Discover Our Tours
         </a>
       </div>
