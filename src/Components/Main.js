@@ -1,5 +1,5 @@
 import React from 'react';
-import './sass/style.scss';
+//import './sass/style.scss';
 import photo1 from '../img/nat-1-large.jpg';
 import photo2 from '../img/nat-2-large.jpg';
 import photo3 from '../img/nat-3-large.jpg';
@@ -7,6 +7,8 @@ import photo3 from '../img/nat-3-large.jpg';
 const Main = () => {
   return (
     <main>
+      <script src='https://unpkg.com/feather-icons'></script>
+
       <section className='section-about'>
         <div className='u-center-text u-margin-bottom-big'>
           <h2 className='heading-secondary'>
@@ -33,7 +35,6 @@ const Main = () => {
               industry. Lorem Ipsum has been the industry's standard dummy text
               ever since the 1500s.
             </p>
-
             <a href='#' className='btn-text'>
               Learn More &rarr;
             </a>
@@ -57,6 +58,18 @@ const Main = () => {
               />
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className='section-tours'>
+        <div className='u-center-text u-margin-bottom-big'>
+          <h2 className='heading-secondary'>Popular tours</h2>
+        </div>
+
+        <div className='row'>
+          <div className='col-1-of-3'>Hey There</div>
+          <div className='col-1-of-3'>Hey There</div>
+          <div className='col-1-of-3'>Hey There</div>
         </div>
       </section>
     </main>
