@@ -4,18 +4,18 @@ import './sass/style.scss';
 
 const Header = () => {
   return (
-    <div class='header'>
-      <div class='header__logo-box'>
-        <img src={logo} alt='Logo' class='header__logo' />
+    <div className='header'>
+      <div className='header__logo-box'>
+        <img src={logo} alt='Logo' className='header__logo' />
       </div>
 
-      <div class='header__text-box'>
-        <h1 class='heading-primary'>
-          <span class='heading-primary--main'>Outdoors</span>
-          <span class='heading-primary--sub'>is where life happens</span>
+      <div className='header__text-box'>
+        <h1 className='heading-primary'>
+          <span className='heading-primary--main'>Outdoors</span>
+          <span className='heading-primary--sub'>is where life happens</span>
         </h1>
 
-        <a href='#' class='btn btn--white btn--animated'>
+        <a href='#' className='btn btn--white btn--animated'>
           Discover Our Tours
         </a>
       </div>
