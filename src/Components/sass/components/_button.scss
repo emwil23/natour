@@ -34,11 +34,20 @@
     }
   }
 
+  &--green {
+    background-color: $color-primary;
+    color: $color-white;
+
+    &::after {
+      background-color: $color-primary;
+    }
+  }
+
   &::after {
     /* Specifying content is necesary */
     content: '';
     display: inline-block;
-    height: 5rem;
+    height: 5.5rem;
     width: 100%;
     border-radius: 10rem;
     position: absolute;
