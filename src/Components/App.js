@@ -6,6 +6,7 @@ import GridTest from './GridTest';
 import Main from './Main';
 import Tours from './Tours';
 import Stories from './Stories';
+import Book from './Book';
 
 const App = () => {
   return (
@@ -13,6 +14,8 @@ const App = () => {
       <Header />
       <Main />
       <Tours />
+      <Stories />
+      <Book />
     </React.Fragment>
   );
 };
