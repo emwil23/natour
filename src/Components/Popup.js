@@ -1,7 +1,6 @@
 import React from 'react';
 import nat8 from '../img/nat-8.jpg';
 import nat9 from '../img/nat-9.jpg';
-import Tours from './Tours';
 
 const Popup = () => {
   return (

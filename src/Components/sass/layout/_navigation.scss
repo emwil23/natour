@@ -73,6 +73,10 @@
     transform: translate(-50%, -50%);
     list-style: none;
     text-align: center;
+
+    @include respond(phone) {
+      width: 90%;
+    }
   }
   &__item {
     margin: 1rem;
@@ -96,6 +100,10 @@
       );
 
       background-size: 220%;
+
+      @include respond(phone) {
+        background-size: 230%;
+      }
 
       transition: all 0.4s;
 
