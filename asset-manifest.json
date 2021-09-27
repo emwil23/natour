@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/natour/static/css/main.46ac4a85.chunk.css",
+    "main.js": "/natour/static/js/main.2b7a6221.chunk.js",
+    "main.js.map": "/natour/static/js/main.2b7a6221.chunk.js.map",
+    "runtime-main.js": "/natour/static/js/runtime-main.a97b5b01.js",
+    "runtime-main.js.map": "/natour/static/js/runtime-main.a97b5b01.js.map",
+    "static/js/2.71e23660.chunk.js": "/natour/static/js/2.71e23660.chunk.js",
+    "static/js/2.71e23660.chunk.js.map": "/natour/static/js/2.71e23660.chunk.js.map",
+    "index.html": "/natour/index.html",
+    "static/css/main.46ac4a85.chunk.css.map": "/natour/static/css/main.46ac4a85.chunk.css.map",
+    "static/js/2.71e23660.chunk.js.LICENSE.txt": "/natour/static/js/2.71e23660.chunk.js.LICENSE.txt",
+    "static/media/style.scss": "/natour/static/media/nat-7.167e44e4.jpg",
+    "static/media/logo-green-2x.76177450.png": "/natour/static/media/logo-green-2x.76177450.png",
+    "static/media/logo-white.6c89a3f0.png": "/natour/static/media/logo-white.6c89a3f0.png",
+    "static/media/nat-1-large.a1c1cbdb.jpg": "/natour/static/media/nat-1-large.a1c1cbdb.jpg",
+    "static/media/nat-2-large.cbc0cd9f.jpg": "/natour/static/media/nat-2-large.cbc0cd9f.jpg",
+    "static/media/nat-3-large.da53b7a0.jpg": "/natour/static/media/nat-3-large.da53b7a0.jpg",
+    "static/media/nat-8.10678031.jpg": "/natour/static/media/nat-8.10678031.jpg",
+    "static/media/nat-9.b7a3e52c.jpg": "/natour/static/media/nat-9.b7a3e52c.jpg",
+    "static/media/video.697d9c04.mp4": "/natour/static/media/video.697d9c04.mp4",
+    "static/media/video.defbf1bb.webm": "/natour/static/media/video.defbf1bb.webm"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a97b5b01.js",
+    "static/js/2.71e23660.chunk.js",
+    "static/css/main.46ac4a85.chunk.css",
+    "static/js/main.2b7a6221.chunk.js"
+  ]
+}
