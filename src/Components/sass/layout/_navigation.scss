@@ -2,6 +2,7 @@
   &__checkbox {
     display: none;
   }
+
   &__button {
     background-color: $color-white;
     height: 5.5rem;
@@ -26,6 +27,7 @@
       right: 3rem;
     }
   }
+
   &__background {
     height: 5rem;
     width: 5rem;
@@ -52,6 +54,7 @@
       right: 3rem;
     }
   }
+
   &__nav {
     height: 100vh;
     //width: 100%;
@@ -66,6 +69,7 @@
 
     transition: all 0.8s cubic-bezier(0.68, -0.55, 0.0265, 1.55);
   }
+
   &__list {
     position: absolute;
     top: 50%;
@@ -78,9 +82,11 @@
       width: 90%;
     }
   }
+
   &__item {
     margin: 1rem;
   }
+
   &__link {
     &:link,
     &:visited {

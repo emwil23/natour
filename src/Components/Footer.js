@@ -45,6 +45,12 @@ const Footer = () => {
             <a href='#' className='footer__link'>
               Emmanuel Wilson
             </a>
+            &nbsp;
+            &
+            &nbsp;
+            <a href='#' className='footer__link'>
+              Tushar Kumar
+            </a>
             .
           </p>
         </div>
