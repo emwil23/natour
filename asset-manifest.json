@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/natour/static/css/main.46ac4a85.chunk.css",
-    "main.js": "/natour/static/js/main.2b7a6221.chunk.js",
-    "main.js.map": "/natour/static/js/main.2b7a6221.chunk.js.map",
+    "main.css": "/natour/static/css/main.755cb191.chunk.css",
+    "main.js": "/natour/static/js/main.9d7ddf50.chunk.js",
+    "main.js.map": "/natour/static/js/main.9d7ddf50.chunk.js.map",
     "runtime-main.js": "/natour/static/js/runtime-main.a97b5b01.js",
     "runtime-main.js.map": "/natour/static/js/runtime-main.a97b5b01.js.map",
     "static/js/2.71e23660.chunk.js": "/natour/static/js/2.71e23660.chunk.js",
     "static/js/2.71e23660.chunk.js.map": "/natour/static/js/2.71e23660.chunk.js.map",
     "index.html": "/natour/index.html",
-    "static/css/main.46ac4a85.chunk.css.map": "/natour/static/css/main.46ac4a85.chunk.css.map",
+    "static/css/main.755cb191.chunk.css.map": "/natour/static/css/main.755cb191.chunk.css.map",
     "static/js/2.71e23660.chunk.js.LICENSE.txt": "/natour/static/js/2.71e23660.chunk.js.LICENSE.txt",
     "static/media/style.scss": "/natour/static/media/nat-7.167e44e4.jpg",
     "static/media/logo-green-2x.76177450.png": "/natour/static/media/logo-green-2x.76177450.png",
@@ -24,7 +24,7 @@
   "entrypoints": [
     "static/js/runtime-main.a97b5b01.js",
     "static/js/2.71e23660.chunk.js",
-    "static/css/main.46ac4a85.chunk.css",
-    "static/js/main.2b7a6221.chunk.js"
+    "static/css/main.755cb191.chunk.css",
+    "static/js/main.9d7ddf50.chunk.js"
   ]
 }
