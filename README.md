@@ -6,7 +6,7 @@
 
 An AI trip planner that can't make places up. Describe a trip in a sentence and Natour plans it day by day on a map, looking every suggested place up on OpenStreetMap and dropping the ones that don't exist. Drag stops between days, lock favourites, ask for a rainy-day version, compare neighbourhoods to stay in, pack from real climate averages, rough out a budget, and keep a journal afterwards that never leaves your device. No account needed.
 
-**natour.ewstudios.workers.dev** (not live yet) · [The shared API](https://github.com/emwil23/ew-apps-api)
+**[natour.ewstudios.workers.dev](https://natour.ewstudios.workers.dev)** · [The shared API](https://github.com/emwil23/ew-apps-api)
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square)
@@ -174,7 +174,7 @@ The same credits are in the app's footer, on the map, next to each guide and pho
 | Version           | Concept                                                                                                         | Why it changed                                               |
 | :---------------- | :-------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
 | v1 (2021)         | Three CSS course exercises: a React 17 tour landing page (natour), a hotel page (Trillo), a homes page (Nexter) | No logic, forms that went nowhere, fake reviews and scarcity |
-| **v2 (Oct 2026)** | An AI trip planner whose every place is checked on OpenStreetMap, with stays, packing, budget and a journal     | Ready to deploy                                              |
+| **v2 (Oct 2026)** | An AI trip planner whose every place is checked on OpenStreetMap, with stays, packing, budget and a journal     | Live                                                         |
 
 ## How it was made
 
