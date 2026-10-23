@@ -1,0 +1,96 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "plan": {
+    "input": {
+      "description": "3 days in Lisbon in May: food, viewpoints and tiled streets, one slow morning, mid budget",
+      "days": 3,
+      "effort": "medium"
+    },
+    "output": "{\"destination\": \"Lisbon\", \"country\": \"Portugal\", \"title\": \"Lisbon Tiles and Viewpoints\", \"summary\": \"Explore Lisbon over three days with historic tiled streets, scenic viewpoints, and traditional Portuguese food at a comfortable pace.\"}\n{\"day\": 1, \"name\": \"Praça do Comércio\", \"kind\": \"sight\", \"minutes\": 45, \"why\": \"Grand riverside square marking the historic entrance to the city.\"}\n{\"day\": 1, \"name\": \"Rua Augusta\", \"kind\": \"walk\", \"minutes\": 30, \"why\": \"Lively pedestrian street connecting the waterfront to the downtown grid.\"}\n{\"day\": 1, \"name\": \"Convento do Carmo\", \"kind\": \"museum\", \"minutes\": 60, \"why\": \"Striking open-air Gothic ruins telling the story of the 1755 earthquake.\"}\n{\"day\": 1, \"name\": \"Miradouro de São Pedro de Alcântara\", \"kind\": \"view\", \"minutes\": 45, \"why\": \"Terraced garden offering sweeping views over the castle and downtown.\"}\n{\"day\": 1, \"name\": \"Bairro Alto Hotel Restaurant\", \"kind\": \"food\", \"minutes\": 90, \"why\": \"Enjoy local flavors and dinner overlooking the historic rooftops.\"}\n{\"day\": 1, \"name\": \"Elevador da Glória\", \"kind\": \"walk\", \"minutes\": 15, \"why\": \"Iconic yellow funicular railway climbing the steep hillside.\"}\n{\"day\": 2, \"name\": \"Castelo de São Jorge\", \"kind\": \"sight\", \"minutes\": 90, \"why\": \"Moorish fortification perched high above the city with peacocks and panoramas.\"}\n{\"day\": 2, \"name\": \"Sé de Lisboa\", \"kind\": \"sight\", \"minutes\": 45, \"why\": \"Lisbon's oldest church, featuring a sturdy medieval fortress-like facade.\"}\n{\"day\": 2, \"name\": \"Alfama\", \"kind\": \"walk\", \"minutes\": 90, \"why\": \"Wander through the labyrinth of narrow, laundry-draped medieval streets.\"}\n{\"day\": 2, \"name\": \"Miradouro das Portas do Sol\", \"kind\": \"view\", \"minutes\": 45, \"why\": \"Stunning viewpoint overlooking the terracotta roofs tumbling toward the river.\"}\n{\"day\": 2, \"name\": \"A Baiuca\", \"kind\": \"food\", \"minutes\": 90, \"why\": \"Intimate tavern serving traditional petiscos with occasional live Fado.\"}\n{\"day\": 2, \"name\": \"Miradouro de Santa Luzia\", \"kind\": \"view\", \"minutes\": 30, \"why\": \"Romantic bougainvillea-framed terrace overlooking the Tagus estuary.\"}\n{\"day\": 3, \"name\": \"Café A Brasileira\", \"kind\": \"food\", \"minutes\": 60, \"why\": \"Relaxed morning coffee by the bronze statue of poet Fernando Pessoa.\"}\n{\"day\": 3, \"name\": \"Mosteiro dos Jerónimos\", \"kind\": \"sight\", \"minutes\": 90, \"why\": \"Masterpiece of Manueline architecture with ornate cloisters and maritime history.\"}\n{\"day\": 3, \"name\": \"Torre de Belém\", \"kind\": \"sight\", \"minutes\": 60, \"why\": \"Iconic 16th-century fortress standing guard at the mouth of the river.\"}\n{\"day\": 3, \"name\": \"Pastéis de Belém\", \"kind\": \"food\", \"minutes\": 45, \"why\": \"Taste the legendary original custard tarts dusted with cinnamon.\"}\n{\"day\": 3, \"name\": \"Padrão dos Descobrimentos\", \"kind\": \"view\", \"minutes\": 45, \"why\": \"Monument celebrating Portugal's Age of Discovery along the waterfront.\"}\n{\"day\": 3, \"name\": \"MAAT\", \"kind\": \"museum\", \"minutes\": 60, \"why\": \"Contemporary art, architecture and technology building with a walkable roof.\"}"
+  },
+  "stay": {
+    "input": {
+      "destination": "Lisbon",
+      "description": "3 days in Lisbon in May: food, viewpoints and tiled streets, one slow morning, mid budget",
+      "stops": [
+        "Praça do Comércio",
+        "Rua Augusta",
+        "Convento do Carmo",
+        "Miradouro de São Pedro de Alcântara",
+        "Bairro Alto Hotel Restaurant",
+        "Elevador da Glória",
+        "Castelo de São Jorge",
+        "Sé de Lisboa",
+        "Alfama",
+        "Miradouro das Portas do Sol",
+        "A Baiuca",
+        "Miradouro de Santa Luzia",
+        "Café A Brasileira",
+        "Mosteiro dos Jerónimos",
+        "Torre de Belém",
+        "Pastéis de Belém",
+        "Padrão dos Descobrimentos",
+        "MAAT"
+      ]
+    },
+    "output": "{\"name\": \"Baixa\", \"vibe\": \"Historic grid of grand squares and bustling pedestrian shopping streets by the river.\", \"pros\": [\"Right next to Praça do Comércio\", \"Flat walking terrain\", \"Excellent metro connections\"], \"cons\": [\"Can feel very touristy\", \"Lively and noisy at night\"], \"goodFor\": \"First-time visitors\"}\n{\"name\": \"Alfama\", \"vibe\": \"Labyrinthine medieval alleys, soulful Fado music, and laundry hanging from windows.\", \"pros\": [\"Close to Castelo de São Jorge\", \"Stunning river viewpoints\", \"Authentic old-world charm\"], \"cons\": [\"Steep hills and staircases\", \"Narrow streets lack car access\"], \"goodFor\": \"Atmosphere seekers\"}\n{\"name\": \"Chiado\", \"vibe\": \"Elegant literary quarter with historic cafes, theatres, and boutique shopping.\", \"pros\": [\"Walking distance to Carmo Convent\", \"Great cafes and restaurants\", \"Central and upscale feel\"], \"cons\": [\"Higher accommodation demand\", \"Busy during daytime hours\"], \"goodFor\": \"Food and culture lovers\"}"
+  },
+  "pack": {
+    "input": {
+      "destination": "Lisbon",
+      "days": 3,
+      "months": [5],
+      "climate": {
+        "high": 24.7,
+        "low": 12.4,
+        "rainMm": 1
+      },
+      "activities": ["sight", "view", "food", "museum", "walk"]
+    },
+    "output": "{\"group\": \"clothes\", \"item\": \"T-shirts\", \"qty\": 4, \"why\": \"for warm May afternoons walking around Lisbon\"}\n{\"group\": \"clothes\", \"item\": \"Light trousers\", \"qty\": 2, \"why\": \"comfortable for exploring cobblestone streets\"}\n{\"group\": \"clothes\", \"item\": \"Light cardigan\", \"qty\": 2, \"why\": \"for cooler evenings by the river\"}\n{\"group\": \"clothes\", \"item\": \"Walking socks\", \"qty\": 4, \"why\": \"prevents blisters during long city walks\"}\n{\"group\": \"clothes\", \"item\": \"Underwear\", \"qty\": 4, \"why\": \"daily essentials\"}\n{\"group\": \"clothes\", \"item\": \"Sun hat\", \"qty\": 1, \"why\": \"protection against strong afternoon sun\"}\n{\"group\": \"gear\", \"item\": \"Walking shoes\", \"qty\": 1, \"why\": \"essential for steep hills and historic viewpoints\"}\n{\"group\": \"gear\", \"item\": \"Day pack\", \"qty\": 1, \"why\": \"carries water and camera during sightseeing\"}\n{\"group\": \"gear\", \"item\": \"Reusable water bottle\", \"qty\": 1, \"why\": \"stays hydrated while walking outdoors\"}\n{\"group\": \"gear\", \"item\": \"Sunglasses\", \"qty\": 1, \"why\": \"bright light reflecting off white limestone\"}\n{\"group\": \"gear\", \"item\": \"Compact umbrella\", \"qty\": 1, \"why\": \"just in case of unexpected passing showers\"}\n{\"group\": \"gear\", \"item\": \"Phone charger\", \"qty\": 1, \"why\": \"keeps navigation and camera working\"}\n{\"group\": \"gear\", \"item\": \"Universal adapter\", \"qty\": 1, \"why\": \"standard European plugs for charging devices\"}\n{\"group\": \"documents\", \"item\": \"Passport\", \"qty\": 1, \"why\": \"required for travel and hotel check-in\"}\n{\"group\": \"documents\", \"item\": \"Health insurance card\", \"qty\": 1, \"why\": \"medical coverage abroad\"}\n{\"group\": \"documents\", \"item\": \"Train tickets\", \"qty\": 1, \"why\": \"transport bookings\"}\n{\"group\": \"documents\", \"item\": \"Hotel booking confirmation\", \"qty\": 1, \"why\": \"easy check-in reference\"}\n{\"group\": \"health\", \"item\": \"Sunscreen\", \"qty\": 1, \"why\": \"protects skin during outdoor sightseeing\"}\n{\"group\": \"health\", \"item\": \"Personal prescription medication\", \"qty\": 1, \"why\": \"daily health needs\"}\n{\"group\": \"health\", \"item\": \"Plasters\", \"qty\": 10, \"why\": \"covers minor blisters from walking\"}\n{\"group\": \"health\", \"item\": \"Hand sanitizer\", \"qty\": 1, \"why\": \"hygiene before eating local food\"}\n{\"group\": \"health\", \"item\": \"Pain relief tablets\", \"qty\": 1, \"why\": \"helps with travel headaches\"}"
+  },
+  "budget": {
+    "input": {
+      "destination": "Lisbon",
+      "days": 3,
+      "style": "mid",
+      "currency": "EUR",
+      "travellers": 2
+    },
+    "output": "{\"category\": \"stay\", \"perDay\": 120, \"note\": \"mid-range hotel in Baixa or Chiado\"}\n{\"category\": \"food\", \"perDay\": 50, \"note\": \"pastel de nata, tascas, and one nice dinner\"}\n{\"category\": \"transport\", \"perDay\": 15, \"note\": \"Navegante card for metro, trams, and buses\"}\n{\"category\": \"activities\", \"perDay\": 25, \"note\": \"Castelo de S. Jorge and museums\"}\n{\"category\": \"extras\", \"perDay\": 20, \"note\": \"coffee breaks and unexpected souvenirs\"}"
+  },
+  "rainy": {
+    "input": {
+      "destination": "Lisbon",
+      "day": 2,
+      "stops": [
+        "Elevador da Glória",
+        "Castelo de São Jorge",
+        "Sé de Lisboa",
+        "Alfama",
+        "Miradouro das Portas do Sol"
+      ],
+      "avoid": [
+        "Praça do Comércio",
+        "Rua Augusta",
+        "Convento do Carmo",
+        "Miradouro de São Pedro de Alcântara",
+        "Bairro Alto Hotel Restaurant",
+        "Elevador da Glória",
+        "Castelo de São Jorge",
+        "Sé de Lisboa",
+        "Alfama",
+        "Miradouro das Portas do Sol",
+        "A Baiuca",
+        "Miradouro de Santa Luzia",
+        "Café A Brasileira",
+        "Mosteiro dos Jerónimos",
+        "Torre de Belém",
+        "Pastéis de Belém",
+        "Padrão dos Descobrimentos",
+        "MAAT"
+      ]
+    },
+    "output": "{\"day\": 2, \"name\": \"Igreja de São Roque\", \"kind\": \"museum\", \"minutes\": 60, \"why\": \"Admire stunning baroque chapels and sacred art away from the rain.\"}\n{\"day\": 2, \"name\": \"Museu Arqueológico do Carmo\", \"kind\": \"museum\", \"minutes\": 75, \"why\": \"Explore the atmospheric ruins under a grand open-air Gothic arch roof.\"}\n{\"day\": 2, \"name\": \"Embaixada\", \"kind\": \"shop\", \"minutes\": 60, \"why\": \"Browse Portuguese fashion and crafts inside a striking 19th-century palace.\"}\n{\"day\": 2, \"name\": \"Café Taus\", \"kind\": \"food\", \"minutes\": 45, \"why\": \"Pause for specialty coffee and pastries in a cozy local spot.\"}\n{\"day\": 2, \"name\": \"Museu de Lisboa - Palácio Pimenta\", \"kind\": \"museum\", \"minutes\": 90, \"why\": \"Discover the detailed history and old scale models of the city indoors.\"}\n{\"day\": 2, \"name\": \"Pavilhão de Portugal\", \"kind\": \"sight\", \"minutes\": 60, \"why\": \"Marvel at the monumental concrete wave roof designed by Álvaro Siza.\"}"
+  }
+}

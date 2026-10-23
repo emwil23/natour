@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Natour: describe the trip, walk it</title>
+    <meta
+      name="description"
+      content="Natour is an AI trip planner: describe a trip and get a day-by-day plan on a map, with every place checked against OpenStreetMap. No account needed."
+    />
+    <meta name="theme-color" content="#F4EFE6" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:title" content="Natour: describe the trip, walk it" />
+    <meta property="og:description" content="An AI trip planner that only suggests real places." />
+    <meta property="og:image" content="/media/og.jpg" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Set the theme before first paint so there is no flash.
+      try {
+        const s = JSON.parse(localStorage.getItem('natour-settings') || '{}').state || {}
+        const t = s.theme || 'system'
+        const dark =
+          t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
