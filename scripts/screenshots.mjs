@@ -4,7 +4,7 @@
 // The AI replies are real Gemini answers to the server's own prompts, recorded once in
 // scripts/screenshot-fixtures.json and replayed here, so the pictures are repeatable and spend no quota.
 // 1. Run ew-apps-api locally with http://localhost:4180 in ALLOWED_ORIGINS.
-// 2. `VITE_API_URL=http://localhost:8789 npm run build && npx serve dist -c ../serve.json -l 4180`
+// 2. `VITE_API_URL=http://localhost:8788 npm run build && npx serve dist -c ../serve.json -l 4180`
 // 3. `node scripts/screenshots.mjs`
 // ANGLE on D3D11 uses the real GPU even headless, so the WebGL globe and the map render.
 import { readFile } from 'node:fs/promises'
@@ -121,15 +121,17 @@ async function plan(p) {
   const { ctx, p } = await open({ colorScheme: 'light' }, { theme: 'light' })
   const trip = await plan(p)
   await p.screenshot({ path: docs('planner') })
-  await p.getByRole('button', { name: 'List' }).click()
+  await p.getByRole('button', { name: 'List', exact: true }).click()
   await settle(p, 500)
   await p.screenshot({ path: docs('list') })
-  await p.getByRole('button', { name: 'Days' }).click()
+  await p.getByRole('button', { name: 'Days', exact: true }).click()
   await p
     .getByRole('listitem', { name: 'Day 02' })
     .getByRole('button', { name: 'Rainy day' })
     .click()
-  await p.getByText(/Each place is checked/).waitFor({ state: 'detached', timeout: 120_000 })
+  // Done when the day shows its Sunny / Rainy switch.
+  await p.getByRole('button', { name: 'Rainy plan' }).waitFor({ timeout: 120_000 })
+  await p.evaluate(() => window.scrollTo(0, 0))
   await settle(p, 2000)
   await p.screenshot({ path: docs('rainy') })
 

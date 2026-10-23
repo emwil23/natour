@@ -65,10 +65,10 @@ function Land() {
       </bufferGeometry>
       <pointsMaterial
         map={map}
-        size={0.016}
+        size={0.02}
         color="#cfe3d8"
         transparent
-        opacity={0.8}
+        opacity={0.95}
         alphaTest={0.4}
       />
     </points>
@@ -175,7 +175,7 @@ function Globe({ progress }: { progress: RefObject<number> }) {
     tilt.setFromAxisAngle(new Vector3(1, 0, 0), 0.3 + pointer.y * 0.08)
     q.premultiply(tilt)
     g.quaternion.copy(q).slerp(FACE, MathUtils.smootherstep(p, 0, 1))
-    camera.position.z = MathUtils.lerp(3.9, 1.32, MathUtils.smootherstep(p, 0, 1))
+    camera.position.z = MathUtils.lerp(4.3, 1.32, MathUtils.smootherstep(p, 0, 1))
     camera.position.x = MathUtils.lerp(pointer.x * 0.12, 0, p)
     camera.lookAt(0, 0, 0)
   })
@@ -207,7 +207,7 @@ function Globe({ progress }: { progress: RefObject<number> }) {
 export default function GlobeScene({ progress }: { progress: RefObject<number> }) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 3.9], fov: 40 }}
+      camera={{ position: [0, 0, 4.3], fov: 40 }}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
     >

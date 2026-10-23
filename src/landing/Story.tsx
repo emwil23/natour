@@ -221,7 +221,7 @@ export function Story({ animate }: { animate: boolean }) {
             <li
               key={c.key}
               data-beat
-              className="border-line relative isolate flex min-h-[50vh] flex-col justify-center overflow-hidden border-t py-12 md:min-h-[78vh]"
+              className="border-line relative flex min-h-[50vh] flex-col justify-center overflow-hidden border-t py-12 md:min-h-[78vh]"
             >
               <img
                 src={`/media/step-${c.key}.webp`}
@@ -229,7 +229,7 @@ export function Story({ animate }: { animate: boolean }) {
                 width={720}
                 height={720}
                 loading="lazy"
-                className="absolute top-1/2 right-0 -z-10 hidden w-[62%] -translate-y-1/2 rounded-3xl opacity-25 md:block dark:opacity-20"
+                className="shadow-card mb-8 size-32 rounded-2xl object-cover md:size-44"
               />
               <p className="spec text-muted">Chapter {i + 1} of 4</p>
               <h3

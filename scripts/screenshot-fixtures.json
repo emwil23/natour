@@ -39,21 +39,13 @@
     "input": {
       "destination": "Lisbon",
       "days": 3,
-      "months": [
-        5
-      ],
+      "months": [5],
       "climate": {
         "high": 24.7,
         "low": 12.4,
         "rainMm": 1
       },
-      "activities": [
-        "sight",
-        "view",
-        "food",
-        "museum",
-        "walk"
-      ]
+      "activities": ["sight", "view", "food", "museum", "walk"]
     },
     "output": "{\"group\": \"clothes\", \"item\": \"T-shirts\", \"qty\": 4, \"why\": \"for warm May afternoons walking around Lisbon\"}\n{\"group\": \"clothes\", \"item\": \"Light trousers\", \"qty\": 2, \"why\": \"comfortable for exploring cobblestone streets\"}\n{\"group\": \"clothes\", \"item\": \"Light cardigan\", \"qty\": 2, \"why\": \"for cooler evenings by the river\"}\n{\"group\": \"clothes\", \"item\": \"Walking socks\", \"qty\": 4, \"why\": \"prevents blisters during long city walks\"}\n{\"group\": \"clothes\", \"item\": \"Underwear\", \"qty\": 4, \"why\": \"daily essentials\"}\n{\"group\": \"clothes\", \"item\": \"Sun hat\", \"qty\": 1, \"why\": \"protection against strong afternoon sun\"}\n{\"group\": \"gear\", \"item\": \"Walking shoes\", \"qty\": 1, \"why\": \"essential for steep hills and historic viewpoints\"}\n{\"group\": \"gear\", \"item\": \"Day pack\", \"qty\": 1, \"why\": \"carries water and camera during sightseeing\"}\n{\"group\": \"gear\", \"item\": \"Reusable water bottle\", \"qty\": 1, \"why\": \"stays hydrated while walking outdoors\"}\n{\"group\": \"gear\", \"item\": \"Sunglasses\", \"qty\": 1, \"why\": \"bright light reflecting off white limestone\"}\n{\"group\": \"gear\", \"item\": \"Compact umbrella\", \"qty\": 1, \"why\": \"just in case of unexpected passing showers\"}\n{\"group\": \"gear\", \"item\": \"Phone charger\", \"qty\": 1, \"why\": \"keeps navigation and camera working\"}\n{\"group\": \"gear\", \"item\": \"Universal adapter\", \"qty\": 1, \"why\": \"standard European plugs for charging devices\"}\n{\"group\": \"documents\", \"item\": \"Passport\", \"qty\": 1, \"why\": \"required for travel and hotel check-in\"}\n{\"group\": \"documents\", \"item\": \"Health insurance card\", \"qty\": 1, \"why\": \"medical coverage abroad\"}\n{\"group\": \"documents\", \"item\": \"Train tickets\", \"qty\": 1, \"why\": \"transport bookings\"}\n{\"group\": \"documents\", \"item\": \"Hotel booking confirmation\", \"qty\": 1, \"why\": \"easy check-in reference\"}\n{\"group\": \"health\", \"item\": \"Sunscreen\", \"qty\": 1, \"why\": \"protects skin during outdoor sightseeing\"}\n{\"group\": \"health\", \"item\": \"Personal prescription medication\", \"qty\": 1, \"why\": \"daily health needs\"}\n{\"group\": \"health\", \"item\": \"Plasters\", \"qty\": 10, \"why\": \"covers minor blisters from walking\"}\n{\"group\": \"health\", \"item\": \"Hand sanitizer\", \"qty\": 1, \"why\": \"hygiene before eating local food\"}\n{\"group\": \"health\", \"item\": \"Pain relief tablets\", \"qty\": 1, \"why\": \"helps with travel headaches\"}"
   },
