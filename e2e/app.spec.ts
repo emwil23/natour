@@ -251,7 +251,9 @@ test('packing list from the climate, then budget and stays for the same trip', a
   await expect(page.getByText(/on average/i)).toBeVisible()
   await page.getByRole('button', { name: 'Write my packing list' }).click()
   await expect(page.getByRole('checkbox')).toHaveCount(5)
-  await page.getByRole('checkbox', { name: /Light rain jacket/ }).check()
+  // Ticks are saved to IndexedDB, then shown, so wait for the state rather than check() at once.
+  await page.getByRole('checkbox', { name: /Light rain jacket/ }).click()
+  await expect(page.getByRole('checkbox', { name: /Light rain jacket/ })).toBeChecked()
   await expect(page.getByRole('progressbar', { name: 'Packed' })).toHaveAttribute(
     'aria-valuenow',
     '1',

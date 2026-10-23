@@ -143,7 +143,7 @@ async function plan(p) {
   await p.getByRole('button', { name: 'Write my packing list' }).click()
   await p.getByRole('checkbox').first().waitFor({ timeout: 60_000 })
   for (const name of [/Passport/, /Walking shoes/, /Sunscreen/, /T-shirts/])
-    await p.getByRole('checkbox', { name }).check()
+    await p.getByRole('checkbox', { name }).click()
   await settle(p, 800)
   await p.screenshot({ path: docs('pack') })
 
