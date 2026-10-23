@@ -14,15 +14,7 @@ export interface Settings {
   ownKey: string | null
   ownBaseUrl: string
   ownModel: string
-  /** The iTunes storefront to search, as a two-letter country code. */
-  country: string
   set: (patch: Partial<Omit<Settings, 'set'>>) => void
-}
-
-/** The browser's region ("en-GB" → "GB"), else the US store. */
-export function defaultCountry(lang = typeof navigator === 'undefined' ? '' : navigator.language) {
-  const region = /-([A-Z]{2})(?![A-Za-z])/.exec(lang)?.[1]
-  return region ? region.toUpperCase() : 'US'
 }
 
 export const useSettings = create<Settings>()(
@@ -35,7 +27,6 @@ export const useSettings = create<Settings>()(
       ownKey: null,
       ownBaseUrl: 'https://api.openai.com/v1',
       ownModel: 'gpt-5-mini',
-      country: defaultCountry(),
       set: (patch) => set(patch),
     }),
     { name: 'natour-settings' },

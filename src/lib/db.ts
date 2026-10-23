@@ -1,77 +1,176 @@
 import Dexie, { type EntityTable } from 'dexie'
-import type { Track } from './music'
 
-export type Feedback = 'up' | 'down' | null
+export const KINDS = [
+  'sight',
+  'food',
+  'view',
+  'walk',
+  'museum',
+  'nature',
+  'shop',
+  'night',
+  'beach',
+] as const
+export type Kind = (typeof KINDS)[number]
+export type Effort = 'easy' | 'medium' | 'hard'
 
-/** A song in a playlist, with the DJ's note and the listener's thumbs. */
-export interface PlaylistTrack extends Track {
-  why?: string | undefined
-  feedback?: Feedback
+/** Where a place is on OpenStreetMap, as Nominatim found it. */
+export interface OsmPlace {
+  lat: number
+  lon: number
+  address: string
+  /** "node/123". */
+  osm: string
+  category: string
+  type: string
 }
 
-export interface Playlist {
+export interface Stop {
+  id: string
+  /** The name as OpenStreetMap has it (the AI's spelling is replaced once checked). */
+  name: string
+  kind: Kind
+  /** Time to spend there. */
+  minutes: number
+  why: string
+  locked: boolean
+  /** null: our server couldn't check it (offline or busy); it shows "not checked" and has no pin. */
+  place: OsmPlace | null
+}
+
+export interface Day {
+  stops: Stop[]
+  /** The rainy-day version, once asked for. */
+  rainy: Stop[] | null
+  useRainy: boolean
+}
+
+export interface Destination {
+  name: string
+  country: string
+  lat: number
+  lon: number
+  /** [south, north, west, east]. */
+  bbox: [number, number, number, number]
+}
+
+export interface Neighbourhood {
+  name: string
+  vibe: string
+  pros: string[]
+  cons: string[]
+  goodFor: string
+  place: OsmPlace | null
+}
+
+export interface PackItem {
+  id: string
+  group: 'clothes' | 'gear' | 'documents' | 'health'
+  item: string
+  qty: number
+  why: string
+  packed: boolean
+}
+
+export const BUDGET_CATEGORIES = ['stay', 'food', 'transport', 'activities', 'extras'] as const
+export type BudgetCategory = (typeof BUDGET_CATEGORIES)[number]
+export type TravelStyle = 'budget' | 'mid' | 'comfort'
+
+export interface Budget {
+  currency: string
+  style: TravelStyle
+  travellers: number
+  /** Per person per day, in `currency`. */
+  perDay: Record<BudgetCategory, number>
+  notes: Partial<Record<BudgetCategory, string>>
+}
+
+/** A job running on the trip (the AI writing, places being checked). */
+export interface Job {
+  kind: 'plan' | 'refine' | 'rainy' | 'stay' | 'pack' | 'budget'
+  day?: number
+  /** What's happening, for the screen reader and the status line. */
+  label: string
+}
+
+export interface Trip {
   id: string
   title: string
-  /** The words the playlist was made from; empty for hand-made ones. */
-  vibe: string
-  /** AI liner notes. */
-  notes: string | null
-  tracks: PlaylistTrack[]
+  description: string
+  summary: string
+  destination: Destination | null
+  days: Day[]
+  effort: Effort
+  /** Travel month, 1-12, for the climate and packing. */
+  month: number
+  stay: Neighbourhood[] | null
+  packing: PackItem[] | null
+  budget: Budget | null
+  job: Job | null
+  /** The last job's error, shown until the next one starts. */
+  error: string | null
+  /** AI suggestions that weren't on OpenStreetMap, so never shown. */
+  dropped: number
   createdAt: number
   updatedAt: number
 }
 
-export interface Like {
-  id: number
-  track: Track
-  at: number
-}
-
-/** One preview listened to for at least a few seconds, for "Your week in music". Never leaves the device. */
-export interface Play {
-  id?: number
-  trackId: number
-  artist: string
-  genre: string | null
-  at: number
-}
-
-export interface QuizResult {
-  /** 'daily-20261023' or 'playlist-<id>-<time>'. */
+/** A day's notes and photos after the trip. Never leaves the device. */
+export interface JournalEntry {
+  /** `${tripId}:${day}`. */
   id: string
-  score: number
-  correct: number
-  rounds: number
-  at: number
+  tripId: string
+  day: number
+  notes: string
+  photos: Blob[]
+  visited: boolean
+  updatedAt: number
 }
 
 export const db = new Dexie('natour') as Dexie & {
-  playlists: EntityTable<Playlist, 'id'>
-  likes: EntityTable<Like, 'id'>
-  plays: EntityTable<Play, 'id'>
-  quiz: EntityTable<QuizResult, 'id'>
+  trips: EntityTable<Trip, 'id'>
+  journal: EntityTable<JournalEntry, 'id'>
 }
 
 db.version(1).stores({
-  playlists: 'id, updatedAt',
-  likes: 'id, at',
-  plays: '++id, at',
-  quiz: 'id, at',
+  trips: 'id, updatedAt',
+  journal: 'id, tripId',
 })
 
 export const uid = () => crypto.randomUUID()
 
-export async function savePlaylist(
-  p: Omit<Playlist, 'id' | 'createdAt' | 'updatedAt'> & { id?: string },
-) {
-  const now = Date.now()
-  const existing = p.id ? await db.playlists.get(p.id) : undefined
-  const id = p.id ?? uid()
-  await db.playlists.put({ ...p, id, createdAt: existing?.createdAt ?? now, updatedAt: now })
-  return id
+/** The stops a day shows: its rainy version when switched on. */
+export const activeStops = (d: Day) => (d.useRainy && d.rainy ? d.rainy : d.stops)
+
+/** Changes a trip in one transaction, so two quick edits can't overwrite each other. */
+export async function updateTrip(id: string, change: (t: Trip) => Partial<Trip> | undefined) {
+  await db.transaction('rw', db.trips, async () => {
+    const t = await db.trips.get(id)
+    if (!t) return
+    const patch = change(t)
+    await db.trips.put({ ...t, ...(patch ?? {}), updatedAt: Date.now() })
+  })
 }
 
-export async function toggleLike(track: Track) {
-  if (await db.likes.get(track.id)) await db.likes.delete(track.id)
-  else await db.likes.put({ id: track.id, track, at: Date.now() })
+export function newTrip(p: Pick<Trip, 'description' | 'effort' | 'month'> & { days: number }) {
+  const now = Date.now()
+  const trip: Trip = {
+    id: uid(),
+    title: 'New trip',
+    description: p.description,
+    summary: '',
+    destination: null,
+    days: Array.from({ length: p.days }, () => ({ stops: [], rainy: null, useRainy: false })),
+    effort: p.effort,
+    month: p.month,
+    stay: null,
+    packing: null,
+    budget: null,
+    job: null,
+    error: null,
+    dropped: 0,
+    createdAt: now,
+    updatedAt: now,
+  }
+  return trip
 }

@@ -57,7 +57,14 @@ async function open(options = {}, settings = {}) {
       localStorage.setItem(
         'willify-settings',
         JSON.stringify({
-          state: { provider: 'own', ownKey: 'demo', ownBaseUrl: ai, ownModel: 'gemini', country: 'US', ...s },
+          state: {
+            provider: 'own',
+            ownKey: 'demo',
+            ownBaseUrl: ai,
+            ownModel: 'gemini',
+            country: 'US',
+            ...s,
+          },
           version: 0,
         }),
       ),
@@ -70,7 +77,9 @@ async function open(options = {}, settings = {}) {
 
 async function dj(p) {
   await p.goto(`${BASE}/app?vibe=${encodeURIComponent(fixtures.vibe.input)}`)
-  await p.getByRole('heading', { name: JSON.parse(fixtures.liner.output).title }).waitFor({ timeout: 60_000 })
+  await p
+    .getByRole('heading', { name: JSON.parse(fixtures.liner.output).title })
+    .waitFor({ timeout: 60_000 })
   await p.waitForLoadState('networkidle')
   await p.waitForTimeout(800)
 }
@@ -82,7 +91,9 @@ async function dj(p) {
   await p.locator('canvas').waitFor({ timeout: 15_000 })
   await p.waitForTimeout(2500)
   await p.screenshot({ path: docs('landing') })
-  await p.evaluate(() => window.scrollTo(0, document.querySelector('#how').offsetTop + window.innerHeight * 1.2))
+  await p.evaluate(() =>
+    window.scrollTo(0, document.querySelector('#how').offsetTop + window.innerHeight * 1.2),
+  )
   await p.waitForTimeout(2000)
   await p.screenshot({ path: docs('story') })
   await p.goto(`${BASE}/developer`)
@@ -103,7 +114,11 @@ async function dj(p) {
   await p.getByRole('button', { name: 'Save to library' }).click()
   await p.getByRole('button', { name: 'More energy' }).click()
   // Done when the form button is enabled again.
-  await p.waitForFunction(() => !document.querySelector('form button[type=submit]')?.disabled, null, { timeout: 60_000 })
+  await p.waitForFunction(
+    () => !document.querySelector('form button[type=submit]')?.disabled,
+    null,
+    { timeout: 60_000 },
+  )
   await p.waitForLoadState('networkidle')
   await p.evaluate(() => window.scrollTo(0, 0))
   await p.waitForTimeout(1200)
@@ -117,10 +132,33 @@ async function dj(p) {
       r.onerror = () => rej(r.error)
     })
     const tx = db.transaction('plays', 'readwrite')
-    const artists = ['Tycho', 'Tycho', 'Bonobo', 'Nujabes', 'Tycho', 'Four Tet', 'Bonobo', 'Caribou']
-    const genres = ['Electronic', 'Electronic', 'Electronic', 'Hip-Hop/Rap', 'Electronic', 'Electronic', 'Electronic', 'Dance']
+    const artists = [
+      'Tycho',
+      'Tycho',
+      'Bonobo',
+      'Nujabes',
+      'Tycho',
+      'Four Tet',
+      'Bonobo',
+      'Caribou',
+    ]
+    const genres = [
+      'Electronic',
+      'Electronic',
+      'Electronic',
+      'Hip-Hop/Rap',
+      'Electronic',
+      'Electronic',
+      'Electronic',
+      'Dance',
+    ]
     for (let i = 0; i < 26; i++)
-      tx.objectStore('plays').add({ trackId: i, artist: artists[i % 8], genre: genres[i % 8], at: Date.now() - (i % 7) * 864e5 - i * 6e5 })
+      tx.objectStore('plays').add({
+        trackId: i,
+        artist: artists[i % 8],
+        genre: genres[i % 8],
+        at: Date.now() - (i % 7) * 864e5 - i * 6e5,
+      })
     await new Promise((res) => (tx.oncomplete = res))
   })
   await p.goto(`${BASE}/app/library`)
@@ -171,7 +209,9 @@ async function dj(p) {
   await p.waitForTimeout(2000)
   await p.screenshot({ path: docs('mobile-landing') })
   await dj(p)
-  await p.getByRole('list', { name: 'Playlist' }).evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 180))
+  await p
+    .getByRole('list', { name: 'Playlist' })
+    .evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 180))
   await p.waitForTimeout(800)
   await p.screenshot({ path: docs('mobile-dj') })
   await ctx.close()

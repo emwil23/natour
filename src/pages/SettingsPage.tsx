@@ -1,17 +1,13 @@
 import { finishOpenRouterAuth, openRouterPending, startOpenRouterAuth } from '@/ai/openrouter'
 import { inBlockedRegion, loadPuter, providers } from '@/ai/providers'
 import {
-  addPasskey,
   confirmAdult,
-  countPasskeys,
   deleteAccount,
   googleEnabled,
   getSupabase,
   isAdult,
-  passkeysSupported,
   sendMagicLink,
   signInWithGoogle,
-  signInWithPasskey,
   signOut,
   verifyEmailCode,
 } from '@/ai/supabase'
@@ -21,7 +17,7 @@ import { cn } from '@/lib/cn'
 import { db } from '@/lib/db'
 import { useSettings, type ProviderId, type Theme } from '@/stores/settings'
 import { Link } from '@tanstack/react-router'
-import { KeyRound, Monitor, Moon, Sun, Trash2 } from 'lucide-react'
+import { Monitor, Moon, Sun, Trash2 } from 'lucide-react'
 import { useEffect, useId, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 
@@ -91,8 +87,8 @@ export function SettingsPage() {
 
       <Section id="ai" title="AI">
         <p className="text-muted mb-4 max-w-prose text-sm">
-          AI is free in Willify, never behind Pro. Pick where it runs. It sees your vibe, refine
-          instructions and song names, nothing personal. See the{' '}
+          AI is free in Natour, never behind Pro. Pick where it runs. It sees your trip description
+          and place names, never your journal, photos or anything personal. See the{' '}
           <Link to="/privacy" className="text-accent-text underline underline-offset-4">
             privacy page
           </Link>
@@ -131,53 +127,31 @@ export function SettingsPage() {
         <ProviderSetup provider={s.provider} />
       </Section>
 
-      <Section id="store" title="Music store">
-        <p className="text-muted mb-4 max-w-prose text-sm">
-          The iTunes country Willify searches. Songs and previews differ a little from country to
-          country.
-        </p>
-        <div className="max-w-xs">
-          <label htmlFor="country" className="spec text-muted">
-            Country
-          </label>
-          <select
-            id="country"
-            value={s.country}
-            onChange={(e) => s.set({ country: e.target.value })}
-            className={cn(input, 'mt-1.5')}
-          >
-            {COUNTRIES.map(([code, name]) => (
-              <option key={code} value={code}>
-                {name}
-              </option>
-            ))}
-            {!COUNTRIES.some(([c]) => c === s.country) && (
-              <option value={s.country}>{s.country}</option>
-            )}
-          </select>
-        </div>
-      </Section>
-
       <Section id="data" title="Your data">
         <p className="text-muted mb-4 max-w-prose text-sm">
-          Playlists, likes, quiz scores and plays are kept only in this browser.
+          Trips, packing lists, budgets and your journal (notes and photos) are kept only in this
+          browser. Clearing your browser data deletes them.
         </p>
         <Button
           variant="danger"
           size="sm"
           onClick={() => {
             if (
-              !confirm('Clear your listening history? "Your week in music" starts again from zero.')
+              !confirm(
+                'Delete every trip and journal entry in this browser? This cannot be undone.',
+              )
             )
               return
-            void db.plays.clear().then(() => toast.success('Listening history cleared'))
+            void Promise.all([db.trips.clear(), db.journal.clear()]).then(() =>
+              toast.success('All trips deleted'),
+            )
           }}
         >
-          <Trash2 /> Clear listening history
+          <Trash2 /> Delete all trips
         </Button>
       </Section>
 
-      <p className="spec text-muted pt-8">Willify build {__BUILD__}</p>
+      <p className="spec text-muted pt-8">Natour build {__BUILD__}</p>
     </div>
   )
 }
@@ -214,7 +188,6 @@ function ProviderSetup({ provider }: { provider: ProviderId | null }) {
   const s = useSettings()
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
-  const [passkeys, setPasskeys] = useState<number | null>(null)
   const [code, setCode] = useState('')
   const [signedIn, setSignedIn] = useState(false)
   const [adult, setAdult] = useState(false)
@@ -231,7 +204,6 @@ function ProviderSetup({ provider }: { provider: ProviderId | null }) {
         void isAdult()
           .then(setAdult)
           .catch(() => setAdult(false))
-        if (session) void countPasskeys().then(setPasskeys)
       })
       unsubscribe = () => data.subscription.unsubscribe()
     })
@@ -244,29 +216,6 @@ function ProviderSetup({ provider }: { provider: ProviderId | null }) {
   if (provider === 'ew')
     return (
       <div className="border-line mt-6 max-w-lg rounded-2xl border p-4">
-        {!signedIn && passkeysSupported() && (
-          <div className="border-line mb-4 flex flex-col gap-2 border-b pb-4">
-            <Button
-              variant="primary"
-              className="self-start"
-              onClick={() =>
-                void signInWithPasskey()
-                  .then(() => toast.success('Signed in'))
-                  .catch(() =>
-                    toast.error(
-                      "No EWSTUDIOS passkey was found. Sign in by email once, then choose 'Add a passkey'.",
-                    ),
-                  )
-              }
-            >
-              <KeyRound /> I have a passkey
-            </Button>
-            <p className="text-muted text-xs">
-              Works with a passkey from any EWSTUDIOS app. New here? Sign in below first, then add a
-              passkey (Face ID, fingerprint, Windows Hello or a password manager).
-            </p>
-          </div>
-        )}
         {!signedIn && googleEnabled && (
           <Button
             className="mb-4"
@@ -357,31 +306,6 @@ function ProviderSetup({ provider }: { provider: ProviderId | null }) {
                 Sign out
               </Button>
             </div>
-            {passkeysSupported() && !passkeys && (
-              <div className="border-accent/30 bg-accent/10 flex flex-wrap items-center gap-3 rounded-xl border p-3">
-                <p className="flex-1">Skip the email next time: add a passkey.</p>
-                <Button
-                  variant="ai"
-                  size="sm"
-                  onClick={() =>
-                    void addPasskey()
-                      .then(() => {
-                        setPasskeys(1)
-                        toast.success('Passkey added')
-                      })
-                      .catch(() => toast.error('The passkey was not saved.'))
-                  }
-                >
-                  <KeyRound /> Add a passkey
-                </Button>
-              </div>
-            )}
-            {Boolean(passkeys) && (
-              <p className="text-muted">
-                {passkeys} passkey{passkeys === 1 ? '' : 's'} saved. It works in every EWSTUDIOS
-                app.
-              </p>
-            )}
           </div>
         ) : (
           <div className="flex flex-col gap-3 text-sm">
@@ -407,7 +331,7 @@ function ProviderSetup({ provider }: { provider: ProviderId | null }) {
             onClick={() => {
               if (
                 !confirm(
-                  'Delete your EW account? Your sign-in, passkeys and AI usage are removed from our server for every EW app. Playlists stay in this browser.',
+                  'Delete your EW account? Your sign-in and AI usage are removed from our server for every EW app. Trips stay in this browser.',
                 )
               )
                 return
@@ -543,29 +467,3 @@ function PuterSetup() {
     </div>
   )
 }
-
-// iTunes storefronts people are most likely to want; any other code from the browser's region still works.
-const COUNTRIES: [string, string][] = [
-  ['US', 'United States'],
-  ['GB', 'United Kingdom'],
-  ['CA', 'Canada'],
-  ['AU', 'Australia'],
-  ['IN', 'India'],
-  ['NG', 'Nigeria'],
-  ['ZA', 'South Africa'],
-  ['KE', 'Kenya'],
-  ['GH', 'Ghana'],
-  ['IE', 'Ireland'],
-  ['DE', 'Germany'],
-  ['FR', 'France'],
-  ['ES', 'Spain'],
-  ['IT', 'Italy'],
-  ['NL', 'Netherlands'],
-  ['SE', 'Sweden'],
-  ['BR', 'Brazil'],
-  ['MX', 'Mexico'],
-  ['JP', 'Japan'],
-  ['KR', 'South Korea'],
-  ['SG', 'Singapore'],
-  ['AE', 'United Arab Emirates'],
-]

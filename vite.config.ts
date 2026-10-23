@@ -39,8 +39,8 @@ export default defineConfig({
         name: 'Natour',
         short_name: 'Natour',
         description: 'An AI trip planner that only suggests real places',
-        theme_color: '#09080F',
-        background_color: '#09080F',
+        theme_color: '#1B2420',
+        background_color: '#F4EFE6',
         display: 'standalone',
         start_url: '/app',
         icons: [
@@ -54,8 +54,8 @@ export default defineConfig({
           },
         ],
         shortcuts: [
-          { name: 'Vibe DJ', url: '/app' },
-          { name: 'Daily quiz', url: '/app/quiz' },
+          { name: 'Plan a trip', url: '/app' },
+          { name: 'Journal', url: '/app/journal' },
         ],
       },
       workbox: {
@@ -63,16 +63,16 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         globPatterns: ['**/*.{js,css,svg,woff2,avif,webp,png}', 'shell/index.html'],
-        // The hero video and the 3D bundle are landing-page extras; don't make every install download them.
+        // The hero video, the 3D globe and the map library are big; they load when needed instead of on install.
         globIgnores: [
           '**/media/*.mp4',
           '**/media/*.webm',
-          '**/GalaxyScene-*.js',
-          '**/Visualiser-*.js',
+          '**/GlobeScene-*.js',
+          '**/MapView-*.js',
           '**/react-three-fiber*.js',
         ],
-        // No runtime caching on purpose: Apple's terms forbid storing previews or artwork, so those always
-        // stream from Apple, and API answers are cached by the server instead.
+        // No runtime caching: map tiles come from OpenFreeMap with its own HTTP caching, Unsplash photos must
+        // be hotlinked, and place answers are cached by the server.
         navigateFallback: '/shell/index.html',
       },
     }),

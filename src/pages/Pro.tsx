@@ -10,17 +10,17 @@ export const PLANS = [
 ]
 
 const FREE = [
-  'The Vibe DJ, with every song checked against iTunes',
-  'Instant 30-second previews; no account, no Premium',
-  'Search, artist and album pages, and the 3D genre galaxy',
-  'Unlimited playlists and likes on your device, export as text or CSV',
-  'The daily quiz and “Your week in music”',
-  'AI playlists, refining, liner notes and quiz clues (free, never paywalled)',
+  'Describe a trip and get a day-by-day plan, every place checked on OpenStreetMap',
+  'Drag stops between days, lock favourites, rainy-day versions',
+  'Neighbourhood comparison, packing list and budget for every trip',
+  'Destination guides with best months to visit',
+  'An on-device journal with notes, photos and your route',
+  'All AI features (free, never paywalled)',
 ]
 const PRO = [
-  'Sync playlists and likes across your devices',
-  'Public share links for playlists',
-  'A party room: build a playlist together, live',
+  'Sync trips across your devices',
+  'Shared trips: friends vote on stops, live',
+  'Export your itinerary as a PDF',
   'Higher daily AI quota',
   'One pass unlocks every EW app',
 ]
@@ -28,9 +28,9 @@ const PRO = [
 export function Pro() {
   return (
     <div className="mx-auto max-w-6xl px-6 pt-36 pb-28">
-      <p className="spec text-accent-text">Willify Pro</p>
-      <h1 className="font-display mt-4 max-w-3xl text-6xl leading-[0.95] font-extrabold [font-stretch:80%] md:text-8xl">
-        Free to listen. Pro when you want it everywhere.
+      <p className="spec text-accent-text">Natour Pro</p>
+      <h1 className="font-display mt-4 max-w-3xl text-6xl leading-[0.95] font-semibold md:text-8xl">
+        Free to plan. Pro when you travel together.
       </h1>
       <p className="text-muted mt-6 max-w-xl text-lg">
         Pro pays for the servers that sync and share. The AI stays free for everyone. Regional
@@ -67,7 +67,7 @@ export function Pro() {
         Checkout opens once the core app has been tested in the wild. Until then everything here is
         free.{' '}
         <Link to="/app" className="text-accent-text underline underline-offset-4">
-          Make a playlist
+          Plan a trip
         </Link>
         .
       </p>

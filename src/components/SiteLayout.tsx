@@ -20,7 +20,7 @@ export function SiteLayout() {
       </a>
       <header className="fixed inset-x-0 top-0 z-40">
         <div className="border-line/70 bg-bg/70 mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-6xl items-center justify-between rounded-full border px-4 py-2 backdrop-blur-md">
-          <Link to="/" aria-label="Willify home">
+          <Link to="/" aria-label="Natour home">
             <Logo />
           </Link>
           <nav aria-label="Site" className="hidden items-center gap-1 sm:flex">
@@ -36,7 +36,7 @@ export function SiteLayout() {
             ))}
           </nav>
           <Button asChild variant="primary" size="sm">
-            <Link to="/app">Open Willify</Link>
+            <Link to="/app">Plan a trip</Link>
           </Button>
         </div>
       </header>
@@ -55,12 +55,16 @@ export function Footer() {
         <div className="max-w-xs">
           <Logo />
           <p className="text-muted mt-3 text-sm">
-            An AI music DJ that only plays real songs. Previews courtesy of iTunes; open source.
+            An AI trip planner that only suggests real places, each one checked on OpenStreetMap.
+            Open source.
           </p>
         </div>
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
           <Link to="/app" className="text-muted hover:text-text">
-            App
+            Your trips
+          </Link>
+          <Link to="/app/explore" className="text-muted hover:text-text">
+            Explore
           </Link>
           <Link to="/pro" className="text-muted hover:text-text">
             Pro
@@ -71,7 +75,7 @@ export function Footer() {
           <Link to="/privacy" className="text-muted hover:text-text">
             Privacy
           </Link>
-          <a href="https://github.com/emwil23/Willify" className="text-muted hover:text-text">
+          <a href="https://github.com/emwil23/natour" className="text-muted hover:text-text">
             Source on GitHub
           </a>
           <Link to="/terms" className="text-muted hover:text-text">
@@ -79,6 +83,17 @@ export function Footer() {
           </Link>
         </nav>
       </div>
+      <p className="text-muted mx-auto max-w-6xl px-6 pb-6 text-xs">
+        Map data ©{' '}
+        <a className="underline" href="https://www.openstreetmap.org/copyright">
+          OpenStreetMap contributors
+        </a>
+        . Guides from{' '}
+        <a className="underline" href="https://en.wikivoyage.org/">
+          Wikivoyage
+        </a>{' '}
+        (CC BY-SA). Climate averages from NASA POWER. Photos from Unsplash.
+      </p>
       <p className="spec border-line text-muted border-t py-5 text-center">
         Made with{' '}
         <Heart className="fill-accent-text text-accent-text inline size-3.5" aria-label="love" /> by

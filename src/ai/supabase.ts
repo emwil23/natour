@@ -8,14 +8,14 @@ export const supabaseConfigured = Boolean(url && anonKey)
 
 let client: Promise<SupabaseClient | null> | null = null
 
-/** Only used to sign in to the free AI server; tasks never leave the device. Loaded on first use. */
+/** Only used to sign in to the free AI server; trips never leave the device. Loaded on first use. */
 export function getSupabase(): Promise<SupabaseClient | null> {
   client ??=
     url && anonKey
       ? import('@supabase/supabase-js').then(({ createClient }) =>
           // The session is kept in this browser and refreshed automatically, so returning visitors stay
-          // signed in. Passkeys are a Supabase beta that needs this opt-in.
-          createClient(url, anonKey, { auth: { experimental: { passkey: true } } }),
+          // signed in. Natour signs in by email code only, no passkeys.
+          createClient(url, anonKey),
         )
       : Promise.resolve(null)
   return client
@@ -91,35 +91,4 @@ export async function signInWithGoogle() {
 
 export async function signOut() {
   await (await getSupabase())?.auth.signOut()
-}
-
-/** WebAuthn is available in this browser. */
-export const passkeysSupported = () =>
-  typeof window !== 'undefined' && 'PublicKeyCredential' in window
-
-/** Signs in with a passkey saved on this device or in a password manager; no email needed. */
-export async function signInWithPasskey() {
-  const sb = await getSupabase()
-  if (!sb) throw new Error('Sign-in is not set up.')
-  const { error } = await sb.auth.signInWithPasskey()
-  if (error) throw error
-}
-
-/** Saves a passkey for the signed-in user, for one-tap sign-in on any browser later. */
-export async function addPasskey() {
-  const sb = await getSupabase()
-  if (!sb) throw new Error('Sign-in is not set up.')
-  const { error } = await sb.auth.registerPasskey()
-  if (error) throw error
-}
-
-/** How many passkeys the signed-in user has; 0 if that can't be read, so the app still offers to add one. */
-export async function countPasskeys(): Promise<number> {
-  try {
-    const sb = await getSupabase()
-    const { data } = (await sb?.auth.passkey.list()) ?? { data: null }
-    return data?.length ?? 0
-  } catch {
-    return 0
-  }
 }

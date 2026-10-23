@@ -30,9 +30,10 @@ const STACK = [
   'TypeScript',
   'TanStack Router',
   'Dexie',
-  'iTunes Search API',
+  'MapLibre GL',
+  'OpenStreetMap',
+  'dnd-kit',
   'Three.js / R3F',
-  'Web Audio API',
   'GSAP',
   'Hono',
   'Supabase',
@@ -43,19 +44,20 @@ export function Developer() {
   const reduce = useReducedMotionSafe()
   return (
     <div className="relative overflow-hidden">
-      <div className="stars pointer-events-none absolute inset-0 opacity-60" aria-hidden />
+      <div className="graticule pointer-events-none absolute inset-0 opacity-60" aria-hidden />
       <section className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 pt-36 pb-20 md:grid-cols-[1.1fr_1fr]">
         <div>
           <p className="spec text-accent-text">Meet the developer</p>
-          <h1 className="font-display mt-4 text-6xl leading-[0.95] font-extrabold [font-stretch:80%] md:text-8xl">
+          <h1 className="font-display mt-4 text-6xl leading-[0.95] font-semibold md:text-8xl">
             Hi, I'm Emmanuel.
           </h1>
           <p className="text-muted mt-6 max-w-lg text-lg">
             I design and build products end to end, from the 3D landing page to the API that keeps
-            the keys safe. Willify started in 2021 as a Spotify player only Premium users could use;
-            this is what it became when I rebuilt it as an AI DJ anyone can play.
+            the keys safe. Natour started in 2021 as three CSS exercises: a tour landing page, a
+            hotel page and a homes page, with forms that went nowhere. This is what they became when
+            I rebuilt them as one trip planner that only suggests places that exist.
           </p>
-          <ul className="mt-8 flex flex-wrap gap-2" aria-label="Stack used in Willify">
+          <ul className="mt-8 flex flex-wrap gap-2" aria-label="Stack used in Natour">
             {STACK.map((s) => (
               <li key={s} className="spec border-line text-muted rounded-full border px-3 py-1.5">
                 {s}
@@ -69,7 +71,7 @@ export function Developer() {
               </a>
             </Button>
             <Button asChild size="lg">
-              <a href="https://github.com/emwil23/Willify">Read the code</a>
+              <a href="https://github.com/emwil23/natour">Read the code</a>
             </Button>
           </div>
         </div>
@@ -82,19 +84,19 @@ export function Developer() {
           <LoopVideo
             src="/media/developer-loop"
             poster="/media/developer-poster.webp"
-            label="Emmanuel's 3D character at a turntable with headphones on, nodding to the music"
+            label="Emmanuel's 3D character with a backpack, studying a paper map and looking up to wave"
             reduce={reduce}
             eagerPoster
             className="shadow-card relative aspect-[3/4] w-full rotate-[-1.5deg] rounded-3xl object-cover"
           />
           <span className="spec border-line bg-surface absolute -bottom-4 left-6 rounded-full border px-3 py-1.5">
-            Resident DJ · EWSTUDIOS
+            Route planner · EWSTUDIOS
           </span>
         </div>
       </section>
 
       <section aria-labelledby="contact-h" className="relative mx-auto max-w-6xl px-6 pb-28">
-        <h2 id="contact-h" className="font-display mb-6 text-4xl font-bold">
+        <h2 id="contact-h" className="font-display mb-6 text-4xl font-semibold">
           Say hello
         </h2>
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

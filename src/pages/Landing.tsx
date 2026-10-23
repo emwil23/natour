@@ -1,35 +1,35 @@
 import { LoopVideo } from '@/components/LoopVideo'
+import { Stamp } from '@/components/Stamp'
 import { Button } from '@/components/ui/button'
 import { Story } from '@/landing/Story'
 import { useSmoothScroll } from '@/landing/useSmoothScroll'
 import { prerendered, useReducedMotionSafe } from '@/lib/boot'
 import { cn } from '@/lib/cn'
+import { MOODS } from '@/lib/destinations'
 import { Quiet, useCan3D } from '@/lib/use3d'
 import { PLANS } from '@/pages/Pro'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { ArrowRight, BadgeCheck, Gauge, Headphones, Orbit, Sparkles, ThumbsUp } from 'lucide-react'
+import { ArrowRight, BookLock, Footprints, Layers, MapPinned } from 'lucide-react'
 import { motion } from 'motion/react'
-import { lazy, Suspense, useId, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useId, useRef, type ReactNode } from 'react'
 
-const GalaxyScene = lazy(() => import('@/components/GalaxyScene'))
+const GlobeScene = lazy(() => import('@/landing/GlobeScene'))
 
-// Example vibes, the same ones the DJ suggests. A tap starts the DJ with it.
-const VIBES = [
-  'Rainy Sunday coding, lo-fi but not sleepy',
-  'Golden hour drive along the coast',
-  'Cooking dinner with friends, 70s soul',
-  'Late-night train through a neon city',
-  'First run of spring, upbeat but not cheesy',
-  'Reading in a café, soft jazz and bossa nova',
-  'Getting ready for a night out, 2000s R&B',
-  'Snowy cabin, acoustic and warm',
+const TRIPS = [
+  '5 days in Lisbon in May: food, viewpoints, one slow morning',
+  'A long weekend in Kyoto for gardens and quiet tea houses',
+  '3 days in Mexico City: markets, murals, street food',
+  'A week in Cape Town with easy hikes and the coast',
+  'Edinburgh in winter: castles, bookshops and pubs',
+  'Marrakesh for 4 days: souks, riads and a desert night',
 ]
 
+// The arc cities' coordinates, pinned around the hero like labels on a chart.
 const HUD = [
-  { text: 'Lo-fi · Arm 2', className: 'top-[22%] right-[8%]' },
-  { text: 'Afrobeats · Arm 1', className: 'top-[60%] right-[3%]' },
-  { text: 'Shoegaze · Arm 3', className: 'bottom-[16%] right-[34%]' },
-  { text: '40 genres · 4 arms', className: 'top-[14%] right-[30%]' },
+  { text: 'Lisbon · 38.72°N 9.14°W', className: 'top-[24%] right-[7%]' },
+  { text: 'Reykjavík · 64.15°N 21.94°W', className: 'top-[14%] right-[31%]' },
+  { text: 'Mexico City · 19.43°N 99.13°W', className: 'bottom-[24%] right-[36%]' },
+  { text: 'Cape Town · 33.92°S 18.42°E', className: 'bottom-[15%] right-[5%]' },
 ]
 
 const fadeUp = {
@@ -50,7 +50,7 @@ export function Landing() {
       <Hero can3D={can3D} />
       <Story animate={!reduce} />
       <Different />
-      <Modes reduce={reduce} />
+      <Moods reduce={reduce} />
       <Pricing />
       <DeveloperCard />
     </>
@@ -60,13 +60,27 @@ export function Landing() {
 function Hero({ can3D }: { can3D: boolean }) {
   const navigate = useNavigate()
   const inputId = useId()
+  const section = useRef<HTMLElement>(null)
+  // How far the hero has scrolled away (0-1); the globe flies into Lisbon with it.
+  const progress = useRef(0)
+  useEffect(() => {
+    if (!can3D) return
+    const onScroll = () => {
+      const h = section.current?.offsetHeight ?? 1
+      progress.current = Math.min(1, Math.max(0, scrollY / (h * 0.8)))
+    }
+    onScroll()
+    addEventListener('scroll', onScroll, { passive: true })
+    return () => removeEventListener('scroll', onScroll)
+  }, [can3D])
 
   return (
     <section
+      ref={section}
       aria-labelledby="hero-h"
-      className="grain relative flex min-h-dvh items-center overflow-hidden bg-[#09080f] pt-28 pb-24 text-[#f1eef8]"
+      className="grain relative flex min-h-dvh items-center overflow-hidden bg-[#0b1517] pt-28 pb-24 text-[#eef1ea]"
     >
-      {/* The galaxy still; on wide screens with a GPU the live 3D galaxy fades in over it. */}
+      {/* The Flow still of the globe; on wide screens with a GPU the live 3D globe fades in over it. */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
         <img
           src="/media/hero.webp"
@@ -76,17 +90,17 @@ function Hero({ can3D }: { can3D: boolean }) {
           fetchPriority="high"
           className={cn(
             'h-full w-full object-cover object-[70%_50%] transition-opacity duration-1000',
-            can3D ? 'opacity-0' : 'opacity-80',
+            can3D ? 'opacity-0' : 'opacity-75',
           )}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#09080f] via-[#09080f]/70 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09080f] via-transparent to-[#09080f]/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0b1517] via-[#0b1517]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0b1517] via-transparent to-[#0b1517]/40" />
       </div>
       {can3D && (
-        <div className="absolute inset-0 hidden md:left-[42%] md:block" aria-hidden>
+        <div className="absolute inset-0 hidden md:left-[38%] md:block" aria-hidden>
           <Quiet>
             <Suspense fallback={null}>
-              <GalaxyScene />
+              <GlobeScene progress={progress} />
             </Suspense>
           </Quiet>
         </div>
@@ -100,7 +114,7 @@ function Hero({ can3D }: { can3D: boolean }) {
           )}
           aria-hidden
         >
-          ▪ {h.text}
+          ◦ {h.text}
         </span>
       ))}
 
@@ -112,16 +126,17 @@ function Hero({ can3D }: { can3D: boolean }) {
           variants={fadeUp}
           className="spec inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/30 px-3 py-1.5 text-white/70 backdrop-blur"
         >
-          <span className="size-1.5 rounded-full bg-[#6cf2c2]" /> AI music DJ · real songs · free
+          <span className="size-1.5 rounded-full bg-[#86d6ae]" /> AI trip planner · real places only
+          · free
         </motion.p>
         {/* Not animated in: it is the LCP element and must paint straight from the prerendered HTML. */}
         <h1
           id="hero-h"
-          className="font-display breathe mt-6 max-w-3xl text-[clamp(3.2rem,9vw,7.5rem)] leading-[0.88] font-extrabold"
+          className="font-display mt-6 max-w-3xl text-[clamp(3.4rem,9vw,7.5rem)] leading-[0.92] font-semibold tracking-tight"
         >
-          Describe the moment.
+          Describe the trip.
           <br />
-          <span className="text-[#a48cff]">Hear it.</span>
+          <em className="text-[#ff8a5c]">Walk it.</em>
         </h1>
         <motion.p
           custom={2}
@@ -130,8 +145,8 @@ function Hero({ can3D }: { can3D: boolean }) {
           variants={fadeUp}
           className="mt-6 max-w-xl text-lg text-white/75"
         >
-          Willify turns a sentence into a playlist of real songs from the iTunes catalogue, checked
-          one by one, and plays 30-second previews straight away. No account. No Premium.
+          Natour turns a sentence into a day-by-day plan on a map. Every place it suggests is
+          checked on OpenStreetMap, so nothing in your plan is made up. No account needed.
         </motion.p>
         <motion.form
           custom={3}
@@ -144,42 +159,42 @@ function Hero({ can3D }: { can3D: boolean }) {
           method="get"
           onSubmit={(e) => {
             e.preventDefault()
-            const v = new FormData(e.currentTarget).get('vibe')
-            const vibe = typeof v === 'string' ? v.trim() : ''
-            void navigate({ to: '/app', search: { vibe } })
+            const v = new FormData(e.currentTarget).get('describe')
+            const describe = typeof v === 'string' ? v.trim() : ''
+            void navigate({ to: '/app', search: { describe } })
           }}
         >
           <label htmlFor={inputId} className="sr-only">
-            Describe a moment
+            Describe your trip
           </label>
           <input
             id={inputId}
-            name="vibe"
+            name="describe"
             required
-            minLength={2}
-            maxLength={300}
-            placeholder={VIBES[0]}
+            minLength={8}
+            maxLength={600}
+            placeholder={TRIPS[0]}
             className="h-12 flex-1 bg-transparent px-3 text-base text-white outline-none placeholder:text-white/45 sm:px-0"
           />
-          <Button type="submit" variant="primary" size="lg" className="bg-[#8f72ff] text-[#09080f]">
-            <Sparkles /> Make my playlist
+          <Button type="submit" variant="primary" size="lg" className="bg-[#ff8a5c] text-[#0b1517]">
+            Plan it <ArrowRight />
           </Button>
         </motion.form>
       </div>
 
-      {/* A ticker of vibes along the bottom edge; each one starts the DJ. */}
+      {/* A ticker of example trips along the bottom edge; each one fills the planner. */}
       <div className="absolute inset-x-0 bottom-0 overflow-hidden border-t border-white/10 bg-black/30 py-3 backdrop-blur">
-        <p className="sr-only">Example vibes</p>
+        <p className="sr-only">Example trips</p>
         <ul className="ticker flex w-max gap-8 whitespace-nowrap">
-          {[...VIBES, ...VIBES].map((v, i) => (
-            <li key={i} aria-hidden={i >= VIBES.length}>
+          {[...TRIPS, ...TRIPS].map((v, i) => (
+            <li key={i} aria-hidden={i >= TRIPS.length}>
               <Link
                 to="/app"
-                search={{ vibe: v }}
-                tabIndex={i >= VIBES.length ? -1 : undefined}
+                search={{ describe: v }}
+                tabIndex={i >= TRIPS.length ? -1 : undefined}
                 className="spec text-white/60 hover:text-white"
               >
-                <span className="text-[#6cf2c2]">▶ Try</span> {v}
+                <span className="text-[#ff8a5c]">→ Try</span> {v}
               </Link>
             </li>
           ))}
@@ -201,12 +216,12 @@ function Card({
   className?: string
 }) {
   return (
-    <li className={cn('border-line bg-surface/60 rounded-3xl border p-6', className)}>
+    <li className={cn('border-line bg-surface/70 rounded-3xl border p-6', className)}>
       <span className="text-accent-text [&_svg]:size-6" aria-hidden>
         {icon}
       </span>
       <h3 className="font-display mt-4 text-2xl font-semibold">{title}</h3>
-      <p className="text-muted mt-2 text-sm leading-relaxed">{children}</p>
+      <div className="text-muted mt-2 text-sm leading-relaxed">{children}</div>
     </li>
   )
 }
@@ -217,105 +232,77 @@ function Different() {
       <p className="spec text-accent-text">Why it's different</p>
       <h2
         id="diff-h"
-        className="font-display mt-3 max-w-3xl text-5xl leading-[0.95] font-bold [font-stretch:80%] md:text-6xl"
+        className="font-display mt-3 max-w-3xl text-5xl leading-[1] font-semibold md:text-6xl"
       >
-        A DJ that can't make songs up.
+        A planner that can't make places up.
       </h2>
       <ul className="mt-10 grid gap-4 md:grid-cols-3">
-        <Card icon={<BadgeCheck />} title="Real songs only" className="md:col-span-2">
-          AI models sometimes invent songs. Willify looks every suggestion up in the iTunes
-          catalogue and drops anything it can't find, so every track is real, playable and one tap
-          from Apple Music.
+        <Card icon={<MapPinned />} title="Every place checked" className="relative md:col-span-2">
+          <Stamp kind="checked" rim="38.72°N 9.14°W" size={88} className="absolute top-6 right-6" />
+          <p className="max-w-md">
+            AI models sometimes invent cafés and viewpoints. Natour looks every suggestion up on
+            OpenStreetMap, inside your destination, and drops anything it can't find. Each real
+            place gets a stamp with its coordinates.
+          </p>
         </Card>
-        <Card icon={<Headphones />} title="No account, no Premium">
-          Previews stream straight from Apple. Your playlists and likes stay in your browser.
+        <Card icon={<Layers />} title="One trip, one place">
+          The plan, where to stay, what to pack and a rough budget all live in the same trip.
         </Card>
-        <Card icon={<ThumbsUp />} title="Thumbs steer it">
-          Thumbs up keeps a song and finds more like it; thumbs down moves the next round away from
-          it.
+        <Card icon={<Footprints />} title="Walkable days">
+          Days are walking routes with times between stops, graded Easy, Medium or Hard by distance.
         </Card>
-        <Card icon={<Orbit />} title="A galaxy of genres">
-          Forty genres on four spiral arms, neighbours sounding alike. Click a star to hear it.
-        </Card>
-        <Card icon={<Gauge />} title="Your week in music">
-          Plays, top artists and top genre, counted on your device and never sent anywhere.
+        <Card icon={<BookLock />} title="A journal that stays home" className="md:col-span-2">
+          Notes and photos for each day, next to the route you walked. They never leave your device
+          and never reach an AI.
         </Card>
       </ul>
     </section>
   )
 }
 
-const MODES = [
-  {
-    key: 'dj',
-    to: '/app',
-    title: 'Vibe DJ',
-    body: 'Describe it, hear it, refine it.',
-    alt: 'A glowing turntable whose record is a spiral galaxy',
-  },
-  {
-    key: 'galaxy',
-    to: '/app/galaxy',
-    title: 'Genre galaxy',
-    body: 'Fly between forty genres in 3D.',
-    alt: 'Glowing stars arranged along the spiral arms of a galaxy',
-  },
-  {
-    key: 'library',
-    to: '/app/library',
-    title: 'Library',
-    body: 'Playlists as sleeves, likes, your week.',
-    alt: 'A shelf of record sleeves lit in violet and mint',
-  },
-  {
-    key: 'quiz',
-    to: '/app/quiz',
-    title: 'Name that song',
-    body: 'A daily clue quiz from the charts.',
-    alt: 'A record with a question mark of light above it',
-  },
-] as const
-
-function Modes({ reduce }: { reduce: boolean }) {
+function Moods({ reduce }: { reduce: boolean }) {
   return (
-    <section aria-labelledby="modes-h" className="mx-auto max-w-6xl px-6 py-20">
+    <section aria-labelledby="moods-h" className="mx-auto max-w-6xl px-6 py-20">
       <div className="grid items-end gap-8 md:grid-cols-[1fr_auto]">
         <div>
-          <p className="spec text-accent-text">Four ways in</p>
+          <p className="spec text-accent-text">Explore</p>
           <h2
-            id="modes-h"
-            className="font-display mt-3 text-5xl leading-[0.95] font-bold [font-stretch:80%] md:text-6xl"
+            id="moods-h"
+            className="font-display mt-3 text-5xl leading-[1] font-semibold md:text-6xl"
           >
-            Pick a door.
+            Start from a feeling.
           </h2>
+          <p className="text-muted mt-4 max-w-md">
+            Coast or mountains, old towns or night cities. Each destination comes with a short guide
+            and the best months to visit.
+          </p>
         </div>
         <LoopVideo
           src="/media/hero"
           poster="/media/hero-poster.webp"
-          label="A spiral galaxy turning slowly, seen from above like a record"
+          label="A globe at night turning slowly as glowing routes draw between cities"
           reduce={reduce}
           className="hidden aspect-video w-72 rounded-2xl object-cover md:block"
         />
       </div>
-      <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {MODES.map((m) => (
-          <li key={m.key}>
+      <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {MOODS.map((m, i) => (
+          <li key={m.id} className={cn(i % 2 === 1 && 'lg:translate-y-8')}>
             <Link
-              to={m.to}
-              className="group border-line bg-surface/60 hover:border-accent-text block overflow-hidden rounded-3xl border transition-colors"
+              to="/app/explore"
+              className="group relative block aspect-[3/4] overflow-hidden rounded-2xl"
             >
               <img
-                src={`/media/mode-${m.key}.webp`}
-                alt={m.alt}
-                width={600}
-                height={600}
+                src={`/media/mood-${m.id}.webp`}
+                alt=""
+                width={320}
+                height={400}
                 loading="lazy"
-                className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="p-5">
-                <h3 className="font-display text-2xl font-semibold">{m.title}</h3>
-                <p className="text-muted mt-1 text-sm">{m.body}</p>
-              </div>
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-3 pt-12 font-medium text-white">
+                {m.label}
+              </span>
             </Link>
           </li>
         ))}
@@ -330,15 +317,12 @@ function Pricing() {
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
           <p className="spec text-accent-text">Pricing</p>
-          <h2
-            id="pricing-h"
-            className="font-display mt-3 text-5xl font-bold [font-stretch:80%] md:text-6xl"
-          >
-            Free to listen.
+          <h2 id="pricing-h" className="font-display mt-3 text-5xl font-semibold md:text-6xl">
+            Free to plan.
           </h2>
           <p className="text-muted mt-4 max-w-md">
-            Everything above is free, AI included. Pro adds sync, share links and party rooms, for
-            all EW apps at once.
+            Everything above is free, AI included. Pro adds trip sync, shared trips where friends
+            vote on stops and PDF export, for all EW apps at once.
           </p>
         </div>
         <Button asChild>
@@ -358,7 +342,7 @@ function Pricing() {
           >
             <p className="spec text-muted">Pro · {p.name}</p>
             <p className="mt-3">
-              <span className="font-display text-5xl font-bold">{p.price}</span>{' '}
+              <span className="font-display text-5xl font-semibold">{p.price}</span>{' '}
               <span className="text-muted">{p.per}</span>
             </p>
           </li>
@@ -373,11 +357,11 @@ function DeveloperCard() {
     <section aria-labelledby="dev-h" className="mx-auto max-w-6xl px-6 pb-28">
       <Link
         to="/developer"
-        className="group border-line bg-surface/60 hover:border-accent-text grid items-center gap-8 overflow-hidden rounded-3xl border p-6 transition-colors md:grid-cols-[auto_1fr_auto] md:p-8"
+        className="group border-line bg-surface/70 hover:border-accent-text grid items-center gap-8 overflow-hidden rounded-3xl border p-6 transition-colors md:grid-cols-[auto_1fr_auto] md:p-8"
       >
         <img
           src="/media/developer.webp"
-          alt="Emmanuel's 3D character wearing headphones"
+          alt="Emmanuel's 3D character with a backpack and a paper map"
           width={160}
           height={160}
           loading="lazy"
@@ -385,7 +369,7 @@ function DeveloperCard() {
         />
         <div>
           <p className="spec text-accent-text">Built by</p>
-          <h2 id="dev-h" className="font-display mt-2 text-4xl font-bold">
+          <h2 id="dev-h" className="font-display mt-2 text-4xl font-semibold">
             Emmanuel Wilson
           </h2>
           <p className="text-muted mt-2 max-w-md">

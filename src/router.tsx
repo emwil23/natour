@@ -76,59 +76,49 @@ const appPages = [
   createRoute({
     getParentRoute: () => shell,
     path: 'app',
-    // ?vibe=... starts the DJ straight away (landing page box, example chips, PWA shortcut).
-    validateSearch: (s: Record<string, unknown>): { vibe?: string } =>
-      typeof s.vibe === 'string' && s.vibe.trim() ? { vibe: s.vibe.slice(0, 300) } : {},
-    component: lazyRouteComponent(() => import('@/pages/Dj'), 'Dj'),
+    // ?describe=... fills the describe box (landing page box, example chips).
+    validateSearch: (s: Record<string, unknown>): { describe?: string } =>
+      typeof s.describe === 'string' && s.describe.trim()
+        ? { describe: s.describe.slice(0, 600) }
+        : {},
+    component: lazyRouteComponent(() => import('@/pages/Trips'), 'Trips'),
   }),
   createRoute({
     getParentRoute: () => shell,
-    path: 'app/search',
-    validateSearch: (
-      s: Record<string, unknown>,
-    ): { q?: string; tab?: 'songs' | 'albums' | 'artists' } => ({
-      ...(typeof s.q === 'string' && s.q ? { q: s.q.slice(0, 100) } : {}),
-      ...(s.tab === 'albums' || s.tab === 'artists' ? { tab: s.tab } : {}),
-    }),
-    component: lazyRouteComponent(() => import('@/pages/SearchPage'), 'SearchPage'),
+    path: 'app/trip/$tripId',
+    component: lazyRouteComponent(() => import('@/pages/Planner'), 'Planner'),
   }),
   createRoute({
     getParentRoute: () => shell,
-    path: 'app/artist/$artistId',
-    component: lazyRouteComponent(() => import('@/pages/ArtistPage'), 'ArtistPage'),
+    path: 'app/trip/$tripId/stay',
+    component: lazyRouteComponent(() => import('@/pages/Stay'), 'Stay'),
   }),
   createRoute({
     getParentRoute: () => shell,
-    path: 'app/album/$albumId',
-    component: lazyRouteComponent(() => import('@/pages/AlbumPage'), 'AlbumPage'),
+    path: 'app/trip/$tripId/pack',
+    component: lazyRouteComponent(() => import('@/pages/Pack'), 'Pack'),
   }),
   createRoute({
     getParentRoute: () => shell,
-    path: 'app/galaxy',
-    component: lazyRouteComponent(() => import('@/pages/Galaxy'), 'Galaxy'),
+    path: 'app/trip/$tripId/budget',
+    component: lazyRouteComponent(() => import('@/pages/BudgetPage'), 'BudgetPage'),
   }),
   createRoute({
     getParentRoute: () => shell,
-    path: 'app/library',
-    component: lazyRouteComponent(() => import('@/pages/Library'), 'Library'),
+    path: 'app/explore',
+    component: lazyRouteComponent(() => import('@/pages/Explore'), 'Explore'),
   }),
   createRoute({
     getParentRoute: () => shell,
-    path: 'app/playlist/$playlistId',
-    component: lazyRouteComponent(() => import('@/pages/PlaylistPage'), 'PlaylistPage'),
+    path: 'app/explore/$place',
+    component: lazyRouteComponent(() => import('@/pages/Destination'), 'Destination'),
   }),
   createRoute({
     getParentRoute: () => shell,
-    path: 'app/quiz',
-    // ?playlist=<id> quizzes you on one of your playlists instead of the daily challenge.
-    validateSearch: (s: Record<string, unknown>): { playlist?: string } =>
-      typeof s.playlist === 'string' && s.playlist ? { playlist: s.playlist.slice(0, 64) } : {},
-    component: lazyRouteComponent(() => import('@/pages/Quiz'), 'Quiz'),
-  }),
-  createRoute({
-    getParentRoute: () => shell,
-    path: 'app/now-playing',
-    component: lazyRouteComponent(() => import('@/pages/NowPlaying'), 'NowPlaying'),
+    path: 'app/journal',
+    validateSearch: (s: Record<string, unknown>): { trip?: string } =>
+      typeof s.trip === 'string' && s.trip ? { trip: s.trip.slice(0, 64) } : {},
+    component: lazyRouteComponent(() => import('@/pages/Journal'), 'Journal'),
   }),
   createRoute({
     getParentRoute: () => shell,
