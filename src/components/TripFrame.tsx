@@ -79,7 +79,10 @@ export function TripFrame({
           {trip.title}
         </h1>
         {trip.summary && <p className="text-muted mt-2 max-w-2xl">{trip.summary}</p>}
-        <nav aria-label="Trip" className="border-line mt-5 flex gap-1 overflow-x-auto border-b">
+        <nav
+          aria-label="Trip"
+          className="border-line mt-5 flex gap-1 overflow-x-auto overflow-y-hidden border-b"
+        >
           {TABS.map((t) => (
             <Link
               key={t.to}

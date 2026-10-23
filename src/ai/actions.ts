@@ -43,7 +43,13 @@ export interface ActionInputs {
 /** What a line should hold. It comes from a model, so every field is checked before use. */
 type Loose<T> = { [K in keyof T]?: unknown }
 
-export type StopLine = Loose<{ day: number; name: string; kind: Kind; minutes: number; why: string }>
+export type StopLine = Loose<{
+  day: number
+  name: string
+  kind: Kind
+  minutes: number
+  why: string
+}>
 
 export interface ActionOutputs {
   /** The first line is the destination; every other line is a stop. */

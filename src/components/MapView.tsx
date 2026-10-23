@@ -1,7 +1,12 @@
 import type { LatLon } from '@/lib/geo'
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+
+// MapLibre finds its worker next to its own file, which a bundler moves; Vite bundles the worker and hands
+// over its URL instead.
+maplibregl.setWorkerUrl(workerUrl)
 
 export interface MapPin extends LatLon {
   /** Shown inside the pin: the stop's number. */
@@ -42,11 +47,14 @@ export function MapView({
   pins,
   lines,
   label,
+  area,
   className,
 }: {
   pins: MapPin[]
   lines: MapLine[]
   label: string
+  /** [south, north, west, east]: shown while there are no pins yet. */
+  area?: [number, number, number, number] | undefined
   className?: string
 }) {
   const box = useRef<HTMLDivElement>(null)
@@ -76,8 +84,8 @@ export function MapView({
   }, [dark])
 
   useEffect(() => {
-    if (map) markers.current = draw(map, pins, lines, markers.current)
-  }, [map, pins, lines])
+    if (map) markers.current = draw(map, pins, lines, markers.current, area)
+  }, [map, pins, lines, area])
 
   return (
     <div
@@ -90,7 +98,13 @@ export function MapView({
 }
 
 /** Puts the pins and route lines on the map, replacing the previous ones; returns the new markers. */
-function draw(m: maplibregl.Map, pins: MapPin[], lines: MapLine[], old: maplibregl.Marker[]) {
+function draw(
+  m: maplibregl.Map,
+  pins: MapPin[],
+  lines: MapLine[],
+  old: maplibregl.Marker[],
+  area?: [number, number, number, number],
+) {
   for (const mk of old) mk.remove()
   const markers = pins.map((p) => {
     const el = document.createElement('div')
@@ -127,6 +141,14 @@ function draw(m: maplibregl.Map, pins: MapPin[], lines: MapLine[], old: maplibre
       paint: { 'line-color': l.color, 'line-width': 3.5, 'line-dasharray': [0.1, 2] },
     })
   }
+  if (!pins.length && area)
+    m.fitBounds(
+      [
+        [area[2], area[0]],
+        [area[3], area[1]],
+      ],
+      { padding: 24, duration: 0 },
+    )
   if (pins.length) {
     const b = new maplibregl.LngLatBounds()
     for (const p of pins) b.extend([p.lon, p.lat])

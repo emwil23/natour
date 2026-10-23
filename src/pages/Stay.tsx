@@ -109,6 +109,7 @@ function StayBody({ trip }: { trip: Trip }) {
             pins={pins}
             lines={[]}
             label="Map: the three neighbourhoods as lettered rings, your stops as numbered pins"
+            area={trip.destination?.bbox}
           />
         </MapSlot>
       </aside>

@@ -109,7 +109,7 @@ function PlannerBody({ trip }: { trip: Trip }) {
           {empty && trip.job ? (
             <PlanningPlaceholder days={trip.days.length} />
           ) : view === 'board' ? (
-            <Board trip={trip} onFocus={setFocus} />
+            <Board trip={trip} />
           ) : (
             <ListView trip={trip} />
           )}
@@ -137,6 +137,7 @@ function PlannerBody({ trip }: { trip: Trip }) {
               pins={pins}
               lines={lines}
               label={`Map of ${trip.title}: stops and walking routes`}
+              area={trip.destination?.bbox}
               className="h-[calc(100%-2.75rem)] w-full"
             />
           </MapSlot>
@@ -212,7 +213,7 @@ function PlanningPlaceholder({ days }: { days: number }) {
 
 // ---------- Board: days as columns, drag stops between them ----------
 
-function Board({ trip, onFocus }: { trip: Trip; onFocus: (i: number) => void }) {
+function Board({ trip }: { trip: Trip }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -237,24 +238,14 @@ function Board({ trip, onFocus }: { trip: Trip; onFocus: (i: number) => void }) 
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
       <ol className="flex snap-x gap-4 overflow-x-auto pb-4" aria-label="Days">
         {trip.days.map((d, i) => (
-          <DayColumn key={i} trip={trip} day={d} index={i} onFocus={() => onFocus(i)} />
+          <DayColumn key={i} trip={trip} day={d} index={i} />
         ))}
       </ol>
     </DndContext>
   )
 }
 
-function DayColumn({
-  trip,
-  day,
-  index,
-  onFocus,
-}: {
-  trip: Trip
-  day: Day
-  index: number
-  onFocus: () => void
-}) {
+function DayColumn({ trip, day, index }: { trip: Trip; day: Day; index: number }) {
   const stops = activeStops(day)
   const stats = dayStats(stops.map((s) => s.place))
   const legList = legs(stops.map((s) => s.place))
@@ -269,7 +260,6 @@ function DayColumn({
         isOver && 'border-accent-text',
       )}
       aria-labelledby={`day-${String(index)}-h`}
-      onMouseEnter={onFocus}
     >
       <header className="border-line border-b p-4">
         <div className="flex items-center justify-between gap-2">

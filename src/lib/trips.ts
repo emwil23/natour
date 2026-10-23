@@ -77,7 +77,10 @@ const str = (v: unknown, max: number) =>
 const num = (v: unknown) =>
   typeof v === 'number' ? v : typeof v === 'string' ? Number(v) : Number.NaN
 const strings = (v: unknown, n: number, max: number) =>
-  (Array.isArray(v) ? v : []).slice(0, n).map((x) => str(x, max)).filter(Boolean)
+  (Array.isArray(v) ? v : [])
+    .slice(0, n)
+    .map((x) => str(x, max))
+    .filter(Boolean)
 
 const isKind = (k: unknown): k is Stop['kind'] => KINDS.includes(k as Stop['kind'])
 const clampMinutes = (m: unknown) =>
@@ -248,10 +251,7 @@ async function replaceDay(trip: Trip, day: number, kind: 'refine' | 'rainy', ins
           if (!out.includes(keep)) out.push(keep)
           continue
         }
-        if (
-          out.some((s) => sameName(s.name, name)) ||
-          others.some((n) => sameName(n, name))
-        )
+        if (out.some((s) => sameName(s.name, name)) || others.some((n) => sameName(n, name)))
           continue
         // Leave room for locked stops the AI hasn't repeated yet.
         const unplacedLocked = locked.filter((s) => !out.includes(s)).length
