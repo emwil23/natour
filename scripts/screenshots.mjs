@@ -1,11 +1,12 @@
 // Takes the README screenshots in docs/ from a production build.
-// Songs, previews and artwork are real: the build talks to a local ew-apps-api, which asks iTunes.
+// Places are real: the build talks to a local ew-apps-api, which checks every one on OpenStreetMap
+// (Nominatim), and guides, climate and photos come from Wikivoyage, NASA POWER and Unsplash the same way.
 // The AI replies are real Gemini answers to the server's own prompts, recorded once in
 // scripts/screenshot-fixtures.json and replayed here, so the pictures are repeatable and spend no quota.
 // 1. Run ew-apps-api locally with http://localhost:4180 in ALLOWED_ORIGINS.
-// 2. `VITE_API_URL=http://localhost:8788 npm run build && npx serve dist -c ../serve.json -l 4180`
+// 2. `VITE_API_URL=http://localhost:8789 npm run build && npx serve dist -c ../serve.json -l 4180`
 // 3. `node scripts/screenshots.mjs`
-// ANGLE on D3D11 uses the real GPU even headless, so the WebGL galaxy and visualiser render.
+// ANGLE on D3D11 uses the real GPU even headless, so the WebGL globe and the map render.
 import { readFile } from 'node:fs/promises'
 import { chromium, devices } from 'playwright'
 
@@ -18,9 +19,11 @@ const fixtures = JSON.parse(
 )
 
 function answer(prompt) {
-  if (prompt.includes('liner notes')) return fixtures.liner.output
-  if (prompt.includes('Rework this playlist')) return fixtures.refine.output
-  return fixtures.vibe.output
+  if (prompt.includes('packing list')) return fixtures.pack.output
+  if (prompt.includes('daily spend')) return fixtures.budget.output
+  if (prompt.includes('neighbourhoods')) return fixtures.stay.output
+  if (prompt.includes('It will rain')) return fixtures.rainy.output
+  return fixtures.plan.output
 }
 
 async function mockAi(page) {
@@ -39,10 +42,8 @@ async function mockAi(page) {
   })
 }
 
-// Installed Edge plays Apple's AAC previews (Playwright's Chromium has no AAC), so the visualiser moves.
 const browser = await chromium.launch({
-  channel: process.env.BROWSER_CHANNEL ?? 'msedge',
-  args: ['--use-angle=d3d11', '--enable-gpu', '--autoplay-policy=no-user-gesture-required'],
+  args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'],
 })
 
 async function open(options = {}, settings = {}) {
@@ -53,21 +54,16 @@ async function open(options = {}, settings = {}) {
     ...options,
   })
   await ctx.addInitScript(
-    ([ai, s]) =>
+    ([ai, s]) => {
+      if (localStorage.getItem('natour-settings')) return
       localStorage.setItem(
-        'willify-settings',
+        'natour-settings',
         JSON.stringify({
-          state: {
-            provider: 'own',
-            ownKey: 'demo',
-            ownBaseUrl: ai,
-            ownModel: 'gemini',
-            country: 'US',
-            ...s,
-          },
+          state: { provider: 'own', ownKey: 'demo', ownBaseUrl: ai, ownModel: 'gemini', ...s },
           version: 0,
         }),
-      ),
+      )
+    },
     [AI, settings],
   )
   const p = await ctx.newPage()
@@ -75,13 +71,22 @@ async function open(options = {}, settings = {}) {
   return { ctx, p }
 }
 
-async function dj(p) {
-  await p.goto(`${BASE}/app?vibe=${encodeURIComponent(fixtures.vibe.input)}`)
-  await p
-    .getByRole('heading', { name: JSON.parse(fixtures.liner.output).title })
-    .waitFor({ timeout: 60_000 })
+const settle = async (p, ms = 1500) => {
   await p.waitForLoadState('networkidle')
-  await p.waitForTimeout(800)
+  await p.waitForTimeout(ms)
+}
+
+/** Plans the recorded Lisbon trip and waits until every place has been checked on OpenStreetMap. */
+async function plan(p) {
+  await p.goto(`${BASE}/app?describe=${encodeURIComponent(fixtures.plan.input.description)}`)
+  await p.getByRole('combobox', { name: 'Days' }).selectOption('3')
+  await p.getByRole('combobox', { name: 'Month' }).selectOption('5')
+  await p.getByRole('button', { name: /Plan my trip/ }).click()
+  await p.waitForURL(/\/app\/trip\//)
+  await p.getByText(/Checking places in|Writing your plan/).waitFor({ timeout: 30_000 })
+  await p.getByText(/Each place is checked/).waitFor({ state: 'detached', timeout: 180_000 })
+  await settle(p, 2500)
+  return p.url()
 }
 
 // Landing, story, developer, 404: desktop, dark.
@@ -89,131 +94,110 @@ async function dj(p) {
   const { ctx, p } = await open()
   await p.goto(`${BASE}/`)
   await p.locator('canvas').waitFor({ timeout: 15_000 })
-  await p.waitForTimeout(2500)
+  await p.waitForTimeout(6000)
   await p.screenshot({ path: docs('landing') })
-  await p.evaluate(() =>
-    window.scrollTo(0, document.querySelector('#how').offsetTop + window.innerHeight * 1.2),
+  // Wheel, not scrollTo: Lenis owns the scroll position, and the story follows Lenis.
+  const target = await p.evaluate(
+    () => document.querySelector('#how').offsetTop + window.innerHeight * 1.55,
   )
-  await p.waitForTimeout(2000)
+  await p.mouse.move(700, 450)
+  while ((await p.evaluate(() => window.scrollY)) < target) {
+    await p.mouse.wheel(0, 300)
+    await p.waitForTimeout(120)
+  }
+  await p.waitForTimeout(2500)
   await p.screenshot({ path: docs('story') })
   await p.goto(`${BASE}/developer`)
-  await p.waitForTimeout(2500)
+  await settle(p, 2500)
   await p.screenshot({ path: docs('developer') })
   await p.goto(`${BASE}/nowhere`)
-  await p.waitForTimeout(1500)
+  await settle(p)
   await p.screenshot({ path: docs('not-found') })
   await ctx.close()
 }
 
-// The DJ, refine, library, search, album, galaxy, now playing, quiz.
-{
-  const { ctx, p } = await open()
-  await dj(p)
-  await p.screenshot({ path: docs('dj') })
-  await p.getByRole('button', { name: /^More like A Walk/ }).click()
-  await p.getByRole('button', { name: 'Save to library' }).click()
-  await p.getByRole('button', { name: 'More energy' }).click()
-  // Done when the form button is enabled again.
-  await p.waitForFunction(
-    () => !document.querySelector('form button[type=submit]')?.disabled,
-    null,
-    { timeout: 60_000 },
-  )
-  await p.waitForLoadState('networkidle')
-  await p.evaluate(() => window.scrollTo(0, 0))
-  await p.waitForTimeout(1200)
-  await p.screenshot({ path: docs('refine') })
-
-  // A week of listening for the stats card, written straight into the app's database.
-  await p.evaluate(async () => {
-    const db = await new Promise((res, rej) => {
-      const r = indexedDB.open('willify')
-      r.onsuccess = () => res(r.result)
-      r.onerror = () => rej(r.error)
-    })
-    const tx = db.transaction('plays', 'readwrite')
-    const artists = [
-      'Tycho',
-      'Tycho',
-      'Bonobo',
-      'Nujabes',
-      'Tycho',
-      'Four Tet',
-      'Bonobo',
-      'Caribou',
-    ]
-    const genres = [
-      'Electronic',
-      'Electronic',
-      'Electronic',
-      'Hip-Hop/Rap',
-      'Electronic',
-      'Electronic',
-      'Electronic',
-      'Dance',
-    ]
-    for (let i = 0; i < 26; i++)
-      tx.objectStore('plays').add({
-        trackId: i,
-        artist: artists[i % 8],
-        genre: genres[i % 8],
-        at: Date.now() - (i % 7) * 864e5 - i * 6e5,
-      })
-    await new Promise((res) => (tx.oncomplete = res))
-  })
-  await p.goto(`${BASE}/app/library`)
-  await p.waitForLoadState('networkidle')
-  await p.waitForTimeout(1200)
-  await p.screenshot({ path: docs('library') })
-
-  await p.goto(`${BASE}/app/search?q=tycho&tab=albums`)
-  await p.waitForLoadState('networkidle')
-  await p.waitForTimeout(1500)
-  await p.screenshot({ path: docs('search') })
-  await p.getByRole('link', { name: /^Dive/ }).first().click()
-  await p.getByRole('heading', { level: 1 }).waitFor()
-  await p.waitForLoadState('networkidle')
-  await p.waitForTimeout(1200)
-  await p.screenshot({ path: docs('album') })
-  await p.getByRole('button', { name: 'Play previews' }).click()
-  await p.waitForTimeout(3500)
-  // Through the app, so the queue survives.
-  await p.getByRole('link', { name: 'Open now playing' }).click()
-  await p.waitForTimeout(3000)
-  await p.screenshot({ path: docs('now-playing') })
-
-  await p.goto(`${BASE}/app/galaxy`)
-  await p.locator('canvas').waitFor({ timeout: 15_000 })
-  await p.waitForLoadState('networkidle')
-  await p.waitForTimeout(3000)
-  await p.screenshot({ path: docs('galaxy') })
-
-  await p.goto(`${BASE}/app/quiz`)
-  await p.getByRole('group', { name: 'Answers' }).waitFor({ timeout: 30_000 })
-  await p.getByRole('button', { name: /Show another clue/ }).click()
-  await p.waitForTimeout(400)
-  await p.screenshot({ path: docs('quiz') })
-  await ctx.close()
-}
-
-// Light theme and phone.
+// One trip through every tab, in the paper (light) theme the app opens in by default.
 {
   const { ctx, p } = await open({ colorScheme: 'light' }, { theme: 'light' })
-  await dj(p)
-  await p.screenshot({ path: docs('dj-light') })
+  const trip = await plan(p)
+  await p.screenshot({ path: docs('planner') })
+  await p.getByRole('button', { name: 'List' }).click()
+  await settle(p, 500)
+  await p.screenshot({ path: docs('list') })
+  await p.getByRole('button', { name: 'Days' }).click()
+  await p
+    .getByRole('listitem', { name: 'Day 02' })
+    .getByRole('button', { name: 'Rainy day' })
+    .click()
+  await p.getByText(/Each place is checked/).waitFor({ state: 'detached', timeout: 120_000 })
+  await settle(p, 2000)
+  await p.screenshot({ path: docs('rainy') })
+
+  await p.goto(`${trip}/stay`)
+  await p.getByRole('button', { name: 'Compare 3 neighbourhoods' }).click()
+  await p.getByText(/Each place is checked/).waitFor({ state: 'detached', timeout: 120_000 })
+  await settle(p, 2500)
+  await p.screenshot({ path: docs('stay') })
+
+  await p.goto(`${trip}/pack`)
+  await p.getByRole('button', { name: 'Write my packing list' }).click()
+  await p.getByRole('checkbox').first().waitFor({ timeout: 60_000 })
+  for (const name of [/Passport/, /Walking shoes/, /Sunscreen/, /T-shirts/])
+    await p.getByRole('checkbox', { name }).check()
+  await settle(p, 800)
+  await p.screenshot({ path: docs('pack') })
+
+  await p.goto(`${trip}/budget`)
+  await p.getByRole('combobox', { name: 'Currency' }).selectOption('EUR')
+  await p.getByRole('spinbutton', { name: 'Travellers' }).fill('2')
+  await p.getByRole('button', { name: 'Rough estimate' }).click()
+  await p
+    .getByText(/Each place is checked|Estimating/)
+    .waitFor({ state: 'detached', timeout: 60_000 })
+  await settle(p, 800)
+  await p.screenshot({ path: docs('budget') })
+
+  await p.goto(`${BASE}/app/journal`)
+  await p
+    .getByRole('textbox', { name: 'Notes' })
+    .first()
+    .fill(
+      'Took the 28 tram up to the castle before the crowds. Custard tarts still warm at the bottom of the hill; the view from Santa Luzia at five was worth the climb.',
+    )
+  await p.getByRole('textbox', { name: 'Notes' }).first().blur()
+  await p.getByRole('button', { name: 'Mark as visited' }).first().click()
+  await settle(p, 1200)
+  await p.screenshot({ path: docs('journal') })
+
+  await p.goto(`${BASE}/app`)
+  await settle(p, 1200)
+  await p.screenshot({ path: docs('trips') })
   await ctx.close()
 }
+
+// The planner at night, explore and a destination guide.
 {
-  const { ctx, p } = await open({ ...devices['Pixel 7'] })
+  const { ctx, p } = await open()
+  await plan(p)
+  await p.screenshot({ path: docs('planner-dark') })
+  await p.goto(`${BASE}/app/explore`)
+  await settle(p, 1500)
+  await p.screenshot({ path: docs('explore') })
+  await p.goto(`${BASE}/app/explore/lisbon`)
+  await p.getByText('The short guide').waitFor()
+  await settle(p, 3000)
+  await p.screenshot({ path: docs('destination') })
+  await ctx.close()
+}
+
+// Phone.
+{
+  const { ctx, p } = await open({ ...devices['Pixel 7'] }, { theme: 'light' })
   await p.goto(`${BASE}/`)
-  await p.waitForTimeout(2000)
+  await settle(p, 2500)
   await p.screenshot({ path: docs('mobile-landing') })
-  await dj(p)
-  await p
-    .getByRole('list', { name: 'Playlist' })
-    .evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 180))
-  await p.waitForTimeout(800)
-  await p.screenshot({ path: docs('mobile-dj') })
+  await plan(p)
+  await p.screenshot({ path: docs('mobile-planner') })
   await ctx.close()
 }
 
