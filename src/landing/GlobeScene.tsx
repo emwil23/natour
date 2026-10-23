@@ -92,7 +92,7 @@ function Graticule() {
   }, [])
   return (
     <lineSegments geometry={geo}>
-      <lineBasicMaterial color="#9db0a8" transparent opacity={0.12} />
+      <lineBasicMaterial color="#9db0a8" transparent opacity={0.16} />
     </lineSegments>
   )
 }
@@ -116,7 +116,7 @@ function Arcs() {
           va
             .clone()
             .applyQuaternion(q)
-            .multiplyScalar(1 + Math.sin(Math.PI * t) * angle * 0.18),
+            .multiplyScalar(1 + Math.sin(Math.PI * t) * Math.min(angle * 0.18, 0.22)),
         )
       }
       const g = new BufferGeometry().setFromPoints(pts)
@@ -161,18 +161,21 @@ const FACE = new Quaternion().setFromUnitVectors(lisbon, new Vector3(0, 0, 1))
 
 function Globe({ progress }: { progress: RefObject<number> }) {
   const group = useRef<Group>(null)
-  const spin = useRef(0.9)
+  // Starts with Lisbon a little left of centre and turns west to east, like the Earth.
+  const spin = useRef(-0.5)
   const q = useMemo(() => new Quaternion(), [])
+  const tilt = useMemo(() => new Quaternion(), [])
   useFrame(({ camera, pointer }, dt) => {
     const g = group.current
     if (!g) return
     const p = MathUtils.clamp(progress.current, 0, 1)
     // Idle: a slow spin with a pointer tilt. Scrolling: ease from that spin to Lisbon, face on, and fly in.
-    spin.current += dt * 0.06 * (1 - p)
-    q.setFromAxisAngle(new Vector3(0, 1, 0), spin.current)
-    q.premultiply(new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), 0.35 + pointer.y * 0.08))
+    spin.current += dt * 0.05 * (1 - p)
+    q.setFromAxisAngle(new Vector3(0, 1, 0), spin.current).multiply(FACE)
+    tilt.setFromAxisAngle(new Vector3(1, 0, 0), 0.3 + pointer.y * 0.08)
+    q.premultiply(tilt)
     g.quaternion.copy(q).slerp(FACE, MathUtils.smootherstep(p, 0, 1))
-    camera.position.z = MathUtils.lerp(3.1, 1.32, MathUtils.smootherstep(p, 0, 1))
+    camera.position.z = MathUtils.lerp(3.9, 1.32, MathUtils.smootherstep(p, 0, 1))
     camera.position.x = MathUtils.lerp(pointer.x * 0.12, 0, p)
     camera.lookAt(0, 0, 0)
   })
@@ -180,15 +183,17 @@ function Globe({ progress }: { progress: RefObject<number> }) {
     <group ref={group}>
       <mesh>
         <sphereGeometry args={[0.995, 64, 64]} />
-        <meshBasicMaterial color="#0e1c1f" />
+        <meshBasicMaterial color="#112a2e" />
       </mesh>
       <mesh scale={1.06}>
         <sphereGeometry args={[1, 48, 48]} />
         <meshBasicMaterial
           color="#ff8a5c"
           transparent
-          opacity={0.035}
+          opacity={0.06}
           blending={AdditiveBlending}
+          // A halo must not hide what's inside it from the depth test.
+          depthWrite={false}
         />
       </mesh>
       <Graticule />
@@ -202,7 +207,7 @@ function Globe({ progress }: { progress: RefObject<number> }) {
 export default function GlobeScene({ progress }: { progress: RefObject<number> }) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 3.1], fov: 40 }}
+      camera={{ position: [0, 0, 3.9], fov: 40 }}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
     >

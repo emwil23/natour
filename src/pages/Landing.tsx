@@ -97,7 +97,7 @@ function Hero({ can3D }: { can3D: boolean }) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b1517] via-transparent to-[#0b1517]/40" />
       </div>
       {can3D && (
-        <div className="absolute inset-0 hidden md:left-[38%] md:block" aria-hidden>
+        <div className="absolute inset-0 hidden md:left-[44%] md:block" aria-hidden>
           <Quiet>
             <Suspense fallback={null}>
               <GlobeScene progress={progress} />
