@@ -59,7 +59,7 @@ export function PlanStrip() {
     <section id="plan" aria-labelledby="plan-h" data-plan className="relative">
       <div
         data-plan-pin
-        className="relative flex flex-col justify-center gap-10 overflow-hidden py-24 md:h-[100svh] md:py-0"
+        className="relative flex flex-col justify-center gap-10 overflow-hidden py-24 md:group-data-[motion]/landing:h-[100svh] md:group-data-[motion]/landing:py-0"
       >
         <header className="mx-auto w-full max-w-[1400px] px-5 md:px-10">
           <p className="spec text-accent-text">Chapter 2 of 4 · Plan</p>
@@ -77,14 +77,14 @@ export function PlanStrip() {
           </p>
         </header>
 
-        <div data-track className="relative md:w-max">
+        <div data-track className="relative md:group-data-[motion]/landing:w-max">
           <Route
             d="M 0 55 C 12 30, 22 80, 34 52 S 58 30, 70 56 S 90 70, 100 45"
-            className="hidden md:block"
+            className="hidden md:group-data-[motion]/landing:block"
           />
           <ol
             aria-label="Suggested places"
-            className="relative flex flex-col items-center gap-8 px-5 md:flex-row md:items-stretch md:gap-10 md:px-[max(2.5rem,calc((100vw-1400px)/2+2.5rem))]"
+            className="relative flex flex-col items-center gap-8 px-5 md:flex-row md:flex-wrap md:items-stretch md:justify-center md:gap-10 md:group-data-[motion]/landing:flex-nowrap md:group-data-[motion]/landing:justify-start md:group-data-[motion]/landing:px-[max(2.5rem,calc((100vw-1400px)/2+2.5rem))]"
           >
             {CARDS.map((c, i) => (
               <li

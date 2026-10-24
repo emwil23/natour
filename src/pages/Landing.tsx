@@ -26,7 +26,7 @@ export function Landing() {
   useSmoothScroll(!reduce)
   useLandingMotion(root, !reduce)
   return (
-    <div ref={root} className="overflow-x-clip">
+    <div ref={root} data-motion={reduce ? undefined : ''} className="group/landing overflow-x-clip">
       <Cover animate={!reduce} />
       <StampWindow />
       <PlanStrip />
