@@ -13,7 +13,7 @@ An AI trip planner that can't make places up. Describe a trip in a sentence and 
 ![TanStack Router](https://img.shields.io/badge/TanStack_Router-1-FF4154?style=flat-square)
 ![MapLibre](https://img.shields.io/badge/MapLibre_GL-OpenFreeMap-396CB2?style=flat-square)
 ![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-every_place_checked-7EBC6F?style=flat-square)
-![three.js](https://img.shields.io/badge/R3F-3D_globe-FF8A5C?style=flat-square)
+![GSAP](https://img.shields.io/badge/GSAP-ScrollTrigger_%2B_Lenis-FF8A5C?style=flat-square)
 ![Lighthouse](https://img.shields.io/badge/Lighthouse-%E2%89%A595-B8402A?style=flat-square)
 ![axe](https://img.shields.io/badge/axe-0_violations-2C6A4C?style=flat-square)
 
@@ -82,7 +82,7 @@ flowchart LR
 ```mermaid
 flowchart TB
     subgraph Browser
-      R[TanStack Router<br/>lazy routes] --> L[Landing<br/>R3F globe, GSAP story]
+      R[TanStack Router<br/>lazy routes] --> L[Landing<br/>magazine cover, one scroll-drawn route]
       R --> SH[App shell]
       SH --> TR[Trips]
       SH --> PL[Planner<br/>dnd-kit columns + list view]
@@ -155,7 +155,7 @@ flowchart LR
 - **Nothing invented is shown as fact.** Neighbourhoods come with vibes, pros and cons, but distances to your stops are computed by the app, not the AI. "Search stays" opens a plain Booking.com or Airbnb search; there are no prices, ratings, reviews or scarcity anywhere. The budget is the AI's ballpark, editable, and stamped ESTIMATE.
 - **Real places get real photos.** Destination pages use Unsplash photos through the shared API, hotlinked and credited to the photographer as Unsplash requires. The AI-generated pictures are mood tiles drawn as miniature dioramas, so they never pass for a real place, and the page says so.
 - **The journal stays home.** Notes and photos are kept in IndexedDB only; photos are shrunk to 1600 px on the device first. The AI only ever sees the trip description, the destination, days, month and place names, never the journal.
-- **The globe is baked, not downloaded.** The landing globe's 4,600 land dots come from Natural Earth's 1:110m land shapes, sampled once on a Fibonacci sphere by `scripts/land-dots.mjs` into a 16 kB (gzipped) list. The 3D scene loads after first paint, on a real GPU only, never with reduced motion; otherwise the Flow still is shown.
+- **One route through the whole landing, and no WebGL.** The landing reads like a travel magazine: a masthead cover on drifting contour lines, a postage stamp that grows to full bleed and dissolves through paper cloud, a pinned strip of postcards stamped as they pass, paper-cut landscape layers, and a journal spread. One dotted terracotta route runs through all of it, drawn by your scroll. Each section owns a stretch of it, and neighbouring stretches meet at the same x so it reads as one line. It uses GSAP core with ScrollTrigger and Lenis, `stroke-dashoffset` behind an SVG mask (no Club plugins), and our own word splitting. The contour lines are traced once from seeded noise by `scripts/contours.mjs` (18 kB gzipped) and loaded after first paint, so the cover's largest element is text. Phones get their own vertical layout, and with reduced motion every stamp is already down and the route is fully drawn. Mobile Lighthouse: 0.96–0.98 performance, 1.0 everywhere else. The design notes are in [docs/landing-redesign.md](docs/landing-redesign.md).
 - **One account for every EWSTUDIOS app, email code only here.** Sign-in exists only for the free AI server's daily quota; Natour shows no passkey button and signs in with the emailed code.
 
 ## Data and credits
@@ -165,7 +165,6 @@ flowchart LR
 - Guides from [Wikivoyage](https://en.wikivoyage.org/), by its contributors, under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); each guide links to its article.
 - Climate averages: data obtained from the NASA Langley Research Center [POWER](https://power.larc.nasa.gov/) Project, funded through the NASA Earth Science Division (Climatology API, 2001–2025).
 - Destination photos from [Unsplash](https://unsplash.com/), credited to each photographer.
-- Globe land shapes from [Natural Earth](https://www.naturalearthdata.com/) (public domain).
 
 The same credits are in the app's footer, on the map, next to each guide and photo, and on the Terms page.
 
@@ -212,13 +211,13 @@ src/
 ├─ ai/                   actions + templates, providers, JSON Lines, PKCE, Supabase sign-in
 ├─ lib/                  trips (AI jobs), check (is it real?), geo (walking times), budget, climate,
 │                        api (places, guides, photos), destinations, Dexie
-├─ landing/              the 3D globe, its baked land dots, the scroll story, smooth scroll
+├─ landing/              cover, stamp window, postcard strip, landscape, journal spread, motion, route
 ├─ components/           shells, trip frame, MapLibre map, stamps, route sketches, effort bar
 └─ pages/                Landing, Trips, Planner, Stay, Pack, Budget, Explore, Destination, Journal,
                          Settings, Developer, Pro, Legal, 404
 scripts/
 ├─ prerender.mjs         static HTML for the public pages
-├─ land-dots.mjs         bakes the globe's land dots from Natural Earth
+├─ contours.mjs          bakes the cover's topographic lines
 └─ screenshots.mjs       the README pictures
 e2e/                     Playwright flows with mocked place, map and AI hosts, and axe checks
 docs/                    brief, design brief, data terms, asset list, screenshots

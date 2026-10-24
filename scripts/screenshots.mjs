@@ -89,24 +89,36 @@ async function plan(p) {
   return p.url()
 }
 
-// Landing, story, developer, 404: desktop, dark.
-{
-  const { ctx, p } = await open()
-  await p.goto(`${BASE}/`)
-  await p.locator('canvas').waitFor({ timeout: 15_000 })
-  await p.waitForTimeout(6000)
-  await p.screenshot({ path: docs('landing') })
-  // Wheel, not scrollTo: Lenis owns the scroll position, and the story follows Lenis.
-  const target = await p.evaluate(
-    () => document.querySelector('#how').offsetTop + window.innerHeight * 1.55,
-  )
+// Wheel, not scrollTo: Lenis owns the scroll position, and the landing's story follows Lenis.
+async function wheelTo(p, target) {
   await p.mouse.move(700, 450)
   while ((await p.evaluate(() => window.scrollY)) < target) {
-    await p.mouse.wheel(0, 300)
-    await p.waitForTimeout(120)
+    await p.mouse.wheel(0, 240)
+    await p.waitForTimeout(90)
   }
   await p.waitForTimeout(2500)
+}
+
+// The landing on map paper: the cover, the stamp window, the postcards being stamped, the landscape.
+{
+  const { ctx, p } = await open({ colorScheme: 'light' }, { theme: 'light' })
+  await p.goto(`${BASE}/`)
+  await settle(p, 3500)
+  await p.screenshot({ path: docs('landing') })
+  const at = (sel, k) =>
+    p.evaluate(([s, f]) => document.querySelector(s).offsetTop + window.innerHeight * f, [sel, k])
+  await wheelTo(p, await at('#how', 0.62))
+  await p.screenshot({ path: docs('landing-stamp') })
+  await wheelTo(p, await at('#plan', 0.75))
   await p.screenshot({ path: docs('story') })
+  await wheelTo(p, await at('#go', 0.95))
+  await p.screenshot({ path: docs('landing-go') })
+  await ctx.close()
+}
+
+// Developer and 404: desktop, dark.
+{
+  const { ctx, p } = await open()
   await p.goto(`${BASE}/developer`)
   await settle(p, 2500)
   await p.screenshot({ path: docs('developer') })
