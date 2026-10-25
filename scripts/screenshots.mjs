@@ -109,7 +109,15 @@ async function wheelTo(p, target) {
     p.evaluate(([s, f]) => document.querySelector(s).offsetTop + window.innerHeight * f, [sel, k])
   await wheelTo(p, await at('#how', 0.62))
   await p.screenshot({ path: docs('landing-stamp') })
-  await wheelTo(p, await at('#plan', 0.75))
+  // Halfway through the pinned postcard strip (the pin spacer holds its scroll length).
+  await wheelTo(
+    p,
+    await p.evaluate(() => {
+      const spacer = document.querySelector('[data-plan-pin]').parentElement
+      const top = spacer.getBoundingClientRect().top + window.scrollY
+      return top + (spacer.offsetHeight - window.innerHeight) * 0.42
+    }),
+  )
   await p.screenshot({ path: docs('story') })
   await wheelTo(p, await at('#go', 0.95))
   await p.screenshot({ path: docs('landing-go') })

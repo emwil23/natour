@@ -95,7 +95,7 @@ export function PlanStrip() {
                 className={cn(
                   'border-line bg-surface shadow-card relative flex w-full max-w-sm shrink-0 flex-col rounded-[3px] border p-6 md:h-[24rem] md:w-[19rem]',
                   'fake' in c &&
-                    'bg-surface-2 [clip-path:polygon(0_0,100%_0,100%_86%,92%_90%,84%_86%,75%_92%,66%_87%,57%_93%,48%_88%,39%_94%,30%_88%,21%_93%,12%_88%,0_92%)]',
+                    'bg-surface-2 pb-16 [clip-path:polygon(0_0,100%_0,100%_86%,92%_90%,84%_86%,75%_92%,66%_87%,57%_93%,48%_88%,39%_94%,30%_88%,21%_93%,12%_88%,0_92%)]',
                 )}
               >
                 <p className="spec text-muted flex justify-between">

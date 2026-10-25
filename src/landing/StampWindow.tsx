@@ -33,13 +33,15 @@ export function StampWindow() {
           <div className="absolute inset-0 overflow-hidden">
             <img
               data-window-img
-              src="/media/mood-coast.webp"
+              src="/media/stamp-coast-1280.webp"
+              srcSet="/media/stamp-coast-768.webp 768w, /media/stamp-coast-1280.webp 1280w, /media/stamp-coast-1920.webp 1920w"
+              sizes="(min-width: 768px) 100vw, 90vw"
               alt=""
-              width={640}
-              height={858}
+              width={1920}
+              height={1072}
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover object-[62%_50%]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
             <div data-window-text className="absolute inset-x-0 bottom-0 p-5 sm:p-8 md:p-12">
