@@ -63,13 +63,11 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         globPatterns: ['**/*.{js,css,svg,woff2,avif,webp,png}', 'shell/index.html'],
-        // The hero video, the 3D globe and the map library are big; they load when needed instead of on install.
+        // The hero video and the map library are big; they load when needed instead of on install.
         globIgnores: [
           '**/media/*.mp4',
           '**/media/*.webm',
-          '**/GlobeScene-*.js',
           '**/MapView-*.js',
-          '**/react-three-fiber*.js',
         ],
         // No runtime caching: map tiles come from OpenFreeMap with its own HTTP caching, Unsplash photos must
         // be hotlinked, and place answers are cached by the server.
@@ -77,7 +75,7 @@ export default defineConfig({
       },
     }),
   ],
-  // The lazy 3D chunks (three.js) are ~1 MB by themselves; they load after first paint, and only with WebGL.
+  // MapLibre is ~1 MB by itself; it loads only on trip pages, after their text.
   build: { chunkSizeWarningLimit: 1200 },
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   test: {

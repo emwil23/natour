@@ -166,6 +166,21 @@
   animation: march 1.2s linear infinite;
 }
 
+/* The landing cover's topographic lines drift like a map being slid across a table. */
+@keyframes contour-drift {
+  to {
+    transform: translate3d(-3%, -2%, 0) rotate(0.6deg);
+  }
+}
+.contour-drift {
+  animation: contour-drift 48s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .contour-drift {
+    animation: none;
+  }
+}
+
 /* The hero's ticker of example trips: two copies of the list, scrolled by half its width. */
 @keyframes ticker {
   to {

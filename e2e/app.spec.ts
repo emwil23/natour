@@ -181,19 +181,41 @@ async function planLisbon(page: Page) {
   await expect(page.getByText(/1 suggestion didn't exist on OpenStreetMap/)).toBeVisible()
 }
 
-test('landing tells the story and hands the description to the planner @mobile', async ({
+test('landing: the cover postcard hands the description to the planner @mobile', async ({
   page,
 }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Describe the trip.')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Natour')
   await expect(page.getByText('Made with')).toContainText('EWSTUDIOS')
-  await expect(page.getByRole('heading', { name: /route you can walk/i })).toBeVisible()
-  await page.getByRole('textbox', { name: 'Describe your trip' }).fill('3 days in Porto')
-  await page.getByRole('button', { name: 'Plan it' }).click()
+  // The cover's postcard is the first of two on the page.
+  await page.getByRole('textbox', { name: 'Describe your trip' }).first().fill('3 days in Porto')
+  await page.getByRole('button', { name: 'Plan it' }).first().click()
   await expect(page).toHaveURL(/\/app\?describe=3/)
   await expect(page.getByRole('textbox', { name: 'Describe your trip' })).toHaveValue(
     '3 days in Porto',
   )
+})
+
+test('landing: the trip in four chapters, readable without motion @mobile', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const chapters = page.getByRole('heading', { level: 2 })
+  await expect(chapters.filter({ hasText: 'Every trip starts as a daydream.' })).toBeVisible()
+  await expect(chapters.filter({ hasText: 'Postcards from places that exist.' })).toBeVisible()
+  await expect(chapters.filter({ hasText: 'Walk it, one stop at a time.' })).toBeVisible()
+  await expect(chapters.filter({ hasText: 'Keep the days you walked.' })).toBeVisible()
+  // Five real places are stamped with their coordinates; the made-up one is dropped.
+  const places = page.getByRole('list', { name: 'Suggested places' }).getByRole('listitem')
+  await expect(places).toHaveCount(6)
+  await expect(places.getByText(/Checked on OpenStreetMap at/)).toHaveCount(5)
+  await expect(places.filter({ hasText: 'Golden Sunset Rooftop' })).toContainText(
+    "Doesn't exist · dropped",
+  )
+  await expect(page.getByText('Day 1 marked as visited')).toBeAttached()
+  // The issue's contents jump to their chapters.
+  await page.getByRole('navigation', { name: 'In this issue' }).getByRole('link').nth(2).click()
+  await expect(page).toHaveURL(/#go$/)
+  await expect(page.getByRole('contentinfo')).toContainText('OpenStreetMap')
 })
 
 test('describe → plan: only real places reach the plan, with their stamps', async ({ page }) => {
