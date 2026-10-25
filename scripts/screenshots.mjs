@@ -6,7 +6,7 @@
 // 1. Run ew-apps-api locally with http://localhost:4180 in ALLOWED_ORIGINS.
 // 2. `VITE_API_URL=http://localhost:8788 npm run build && npx serve dist -c ../serve.json -l 4180`
 // 3. `node scripts/screenshots.mjs`
-// ANGLE on D3D11 uses the real GPU even headless, so the WebGL globe and the map render.
+// ANGLE on D3D11 uses the real GPU even headless, so the MapLibre map renders.
 import { readFile } from 'node:fs/promises'
 import { chromium, devices } from 'playwright'
 
